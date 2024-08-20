@@ -173,7 +173,7 @@ class EventsAPITestCase(APITestCase):
         """ Testing deleting an event """
 
         response = self.client.delete(
-                f'/events/delete/{self.event.id}/',
+                f'/events/delete/{self.events.id}/',
         )
 
         print(response.json())
