@@ -3,8 +3,8 @@ from rest_framework.routers import DefaultRouter
 from .views import TeamMemberViewSet
 
 router = DefaultRouter()
-router.register(r'team-members', TeamMemberViewSet)
+router.register(r'about-us', TeamMemberViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
 ]
