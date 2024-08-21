@@ -4,13 +4,13 @@ from .models import TeamMember, CategoryDocument, Document, OrganizationDetail
 
 @admin.register(TeamMember)
 class TeamMemberAdmin(admin.ModelAdmin):
-    list_display = ("name", "last_name", "role", "photo")
-    search_fields = ("name", "last_name", "role")
+    list_display = ("name", "last_name", "role", "link")
+    search_fields = ("name", "last_name", "role", "is_published")
 
 
 @admin.register(CategoryDocument)
 class CategoryDocumentAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "is_published")
 
 
 @admin.register(Document)
@@ -33,4 +33,5 @@ class OrganizationDetailAdmin(admin.ModelAdmin):
         "correspondent_account",
         "director",
         "link",
+        "is_published",
     )

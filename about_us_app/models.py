@@ -7,26 +7,36 @@ from .utils import docs_path
 
 
 class Abstract(models.Model):
-    name = models.CharField(
-        verbose_name="Название", max_length=100, help_text="Текст не более 100 символов"
-    )
     time_create = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
     time_update = models.DateTimeField(verbose_name="Изменено", auto_now=True)
-    is_published = models.BooleanField(verbose_name="Актуально на сайте", default=True)
+    is_published = models.BooleanField(
+        verbose_name="Актуально на сайте",
+        default=True,
+        help_text="Если уже неактуально, но может понадобиться, снимите флажок",
+    )
 
     class Meta:
         abstract = True
 
 
 class TeamMember(Abstract):
-    # name = models.CharField(max_length=100, verbose_name="Имя")
+    name = models.CharField(
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
+        max_length=100,
+        verbose_name="Имя",
+        help_text="Текст не более 100 символов (цифры запрещены)",
+    )
     last_name = models.CharField(
-        max_length=100, verbose_name="Фамилия", help_text="Текст не более 100 символов"
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
+        max_length=100,
+        verbose_name="Фамилия",
+        help_text="Текст не более 100 символов (цифры запрещены)",
     )
     role = models.CharField(
-        max_length=50,
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
+        max_length=100,
         verbose_name="Роль в проекте",
-        help_text="Текст не более 50 символов",
+        help_text="Текст не более 100 символов (цифры запрещены)",
     )
     link = models.ImageField(
         upload_to=docs_path,
@@ -37,15 +47,16 @@ class TeamMember(Abstract):
     )
 
     class Meta:
-        verbose_name = "Член команды"
-        verbose_name_plural = "Члена команды"
+        verbose_name = "Члена команды"
+        verbose_name_plural = "Члены команды"
 
     def __str__(self):
         return f"{self.name} {self.last_name} - {self.role}"
 
 
-class CategoryDocument(models.Model):
+class CategoryDocument(Abstract):
     name = models.CharField(
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
         verbose_name="Категория",
         max_length=20,
         null=False,
@@ -61,23 +72,18 @@ class CategoryDocument(models.Model):
 
 
 class Document(Abstract):
-    # name = models.CharField(
-    #     verbose_name="Название", max_length=100, help_text="Текст не более 100 символов"
-    # )
+    name = models.CharField(
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
+        verbose_name="Название",
+        max_length=100,
+        help_text="Текст не более 100 символов (цифры запрещены)",
+    )
     category = models.ForeignKey(
         CategoryDocument, verbose_name="Категория", on_delete=models.PROTECT, null=False
     )
     link = models.FileField(verbose_name="Ссылка", upload_to=docs_path)
     description = models.TextField(
         verbose_name="Описание", help_text="Текстовое поле без ограничений"
-    )
-
-    time_create = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
-    time_update = models.DateTimeField(verbose_name="Изменено", auto_now=True)
-    is_published = models.BooleanField(
-        verbose_name="Актуально на сайте",
-        default=True,
-        help_text="Если уже неактуально, но может понадобиться, снимите флажок",
     )
 
     class Meta:
@@ -89,11 +95,12 @@ class Document(Abstract):
 
 
 class OrganizationDetail(Abstract):
-    # name = models.CharField(
-    #     verbose_name="Название",
-    #     max_length=100,
-    #     help_text="Текст не более 100 символов",
-    # )
+    name = models.CharField(
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
+        verbose_name="Название",
+        max_length=100,
+        help_text="Текст не более 100 символов (цифры запрещены)",
+    )
     legal_address = models.CharField(
         verbose_name="Юридический адрес",
         max_length=200,
@@ -148,7 +155,10 @@ class OrganizationDetail(Abstract):
         help_text="Состоит из 20 цифр",
     )
     director = models.CharField(
-        verbose_name="Директор", max_length=100, help_text="Текст не более 100 символов"
+        validators=[RegexValidator(regex=r"\D")],
+        verbose_name="Директор",
+        max_length=100,
+        help_text="Текст не более 100 символов (цифры запрещены)",
     )
     link = models.ImageField(
         verbose_name="QR-код банка",
