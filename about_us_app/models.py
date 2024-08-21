@@ -163,6 +163,7 @@ class OrganizationDetail(Abstract):
     link = models.ImageField(
         verbose_name="QR-код банка",
         upload_to=docs_path,
+        blank=True,
         help_text="Отправляет на страницу, откуда можно сделать пожертвование на нужды организации",
     )
 
