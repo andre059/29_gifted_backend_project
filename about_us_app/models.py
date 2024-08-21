@@ -43,7 +43,7 @@ class TeamMember(Abstract):
         blank=True,
         null=True,
         verbose_name="Фотография",
-        help_text="Фото необязательно",
+        help_text="Добавьте фото (необязательно)",
     )
 
     class Meta:
@@ -81,7 +81,7 @@ class Document(Abstract):
     category = models.ForeignKey(
         CategoryDocument, verbose_name="Категория", on_delete=models.PROTECT, null=False
     )
-    link = models.FileField(verbose_name="Ссылка", upload_to=docs_path)
+    link = models.FileField(verbose_name="Ссылка", upload_to=docs_path, help_text="Добавьте документ (обязательно)",)
     description = models.TextField(
         verbose_name="Описание", help_text="Текстовое поле без ограничений"
     )
@@ -164,7 +164,7 @@ class OrganizationDetail(Abstract):
         verbose_name="QR-код банка",
         upload_to=docs_path,
         blank=True,
-        help_text="Отправляет на страницу, откуда можно сделать пожертвование на нужды организации",
+        help_text="Отправляет на страницу, откуда можно сделать пожертвование на нужды организации (необязательно)",
     )
 
     class Meta:
