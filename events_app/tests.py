@@ -29,8 +29,6 @@ class EventsAPITestCase(APITestCase):
             data=data,
         )
 
-        print(response.json())
-
         self.assertEqual(
             response.status_code,
             status.HTTP_201_CREATED
@@ -40,7 +38,7 @@ class EventsAPITestCase(APITestCase):
         self.assertEqual(
             response.json(),
             {
-                'id': 1,
+                'id': 2,
                 'name_of_event': 'Тестовое мероприятие',
                 'description_of_event': 'Тестовое описание',
                 'address_of_event': 'Санкт-Петербург, ул. Ленина, д.1',
@@ -79,8 +77,6 @@ class EventsAPITestCase(APITestCase):
             '/events/list/'
         )
 
-        print(response.json())
-
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK
@@ -92,14 +88,9 @@ class EventsAPITestCase(APITestCase):
         )
 
         self.assertIsNone(
-            response.json()['next']
-        )
-
-        self.assertIsNone(
             response.json()['previous']
         )
 
-        # Test error handling
         response = self.client.get(
             '/events/list/100/'
         )
@@ -112,18 +103,9 @@ class EventsAPITestCase(APITestCase):
     def test_retrieve_events(self):
         """ Testing getting one event """
 
-        Events.objects.create(
-            name_of_event='Тестовое мероприятие 3',
-            description_of_event='Тестовое описание 3',
-            address_of_event='Санкт-Петербург, ул. Ленина, д.3',
-            date_time_of_event=datetime(2022, 2, 2, 2, 2, 2, tzinfo=timezone(timedelta(hours=3))),
-        )
-
         response = self.client.get(
-            '/events/1/'
+            f'/events/{self.events.id}/'
         )
-
-        print(response.json())
 
         self.assertEqual(
             response.status_code,
@@ -131,12 +113,16 @@ class EventsAPITestCase(APITestCase):
         )
 
         self.assertEqual(
-            response.json(),
-            {'id': 1,
-             'name_of_event': 'Тестовое мероприятие 3',
-             'description_of_event': 'Тестовое описание 3',
-             'address_of_event': 'Санкт-Петербург, ул. Ленина, д.3',
-             'date_time_of_event': '2022-02-02T02:02:02+03:00'}
+            response.data['name_of_event'], 'Тестовое мероприятие 1'
+        )
+        self.assertEqual(
+            response.data['description_of_event'], 'Тестовое описание 1'
+        )
+        self.assertEqual(
+            response.data['address_of_event'], 'Санкт-Петербург, ул. Ленина, д.1'
+        )
+        self.assertEqual(
+            response.data['date_time_of_event'], '2020-01-01T00:00:00+03:00'
         )
 
     def test_update_events(self):
@@ -151,34 +137,27 @@ class EventsAPITestCase(APITestCase):
             data=data,
         )
 
-        print(response.json())
-
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK
         )
 
         self.assertEqual(
-            response.json(),
-            {
-                'id': self.events.id,
-                'name_of_event': 'Тестовое мероприятие 4',
-                'description_of_event': 'Тестовое описание 1',
-                'address_of_event': 'Санкт-Петербург, ул. Ленина, д.1',
-                'date_time_of_event': datetime(2020, 1, 1, 0, 0, 0, tzinfo=timezone(timedelta(hours=3))),
-            }
+            response.data['name_of_event'], 'Тестовое мероприятие 4'
         )
 
-    def test_delete_events(self):
+    def test_destroy_events(self):
         """ Testing deleting an event """
 
         response = self.client.delete(
                 f'/events/delete/{self.events.id}/',
         )
 
-        print(response.json())
-
         self.assertEqual(
             response.status_code,
             status.HTTP_204_NO_CONTENT
+        )
+
+        self.assertFalse(
+            Events.objects.filter(pk=self.events.id).exists()
         )

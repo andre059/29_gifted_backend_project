@@ -31,14 +31,14 @@ class EventsRetriveAPIView(generics.RetrieveAPIView):
     queryset = Events.objects.all()
 
 
-class EventsUpdateAPIView(generics.RetrieveAPIView):
+class EventsUpdateAPIView(generics.UpdateAPIView):
 
     serializer_class = EventsSerializer
     queryset = Events.objects.all()
     permission_classes = [AllowAny]
 
 
-class EventsDeleteAPIView(generics.RetrieveAPIView):
+class EventsDestroyAPIView(generics.DestroyAPIView):
 
     serializer_class = EventsSerializer
     permission_classes = [AllowAny]
