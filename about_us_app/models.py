@@ -5,6 +5,13 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from .utils import docs_path
 
+# Виды документов
+CHOISE = {
+    "1": "Документы",
+    "2": "Отчетность",
+    "3": "Уставные документы",
+}
+
 
 class Abstract(models.Model):
     time_create = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
@@ -54,21 +61,21 @@ class TeamMember(Abstract):
         return f"{self.name} {self.last_name} - {self.role}"
 
 
-class CategoryDocument(Abstract):
-    name = models.CharField(
-        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
-        verbose_name="Категория",
-        max_length=20,
-        null=False,
-        help_text="Текст не более 20 символов",
-    )
+# class CategoryDocument(Abstract):
+#     name = models.CharField(
+#         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
+#         verbose_name="Категория",
+#         max_length=20,
+#         null=False,
+#         help_text="Текст не более 20 символов",
+#     )
 
-    class Meta:
-        verbose_name = "Категорию документов"
-        verbose_name_plural = "Категории документов"
+#     class Meta:
+#         verbose_name = "Категорию документов"
+#         verbose_name_plural = "Категории документов"
 
-    def __str__(self):
-        return f"{self.name}"
+#     def __str__(self):
+#         return f"{self.name}"
 
 
 class Document(Abstract):
@@ -78,10 +85,12 @@ class Document(Abstract):
         max_length=100,
         help_text="Текст не более 100 символов (цифры запрещены)",
     )
-    category = models.ForeignKey(
-        CategoryDocument, verbose_name="Категория", on_delete=models.PROTECT, null=False
+    category = models.CharField(verbose_name="Категория", null=False, choices=CHOISE)
+    link = models.FileField(
+        verbose_name="Ссылка",
+        upload_to=docs_path,
+        help_text="Добавьте документ (обязательно)",
     )
-    link = models.FileField(verbose_name="Ссылка", upload_to=docs_path, help_text="Добавьте документ (обязательно)",)
     description = models.TextField(
         verbose_name="Описание", help_text="Текстовое поле без ограничений"
     )

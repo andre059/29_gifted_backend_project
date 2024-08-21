@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TeamMember, CategoryDocument, Document, OrganizationDetail
+from .models import TeamMember, Document, OrganizationDetail
 
 
 @admin.register(TeamMember)
@@ -8,9 +8,9 @@ class TeamMemberAdmin(admin.ModelAdmin):
     search_fields = ("name", "last_name", "role", "is_published")
 
 
-@admin.register(CategoryDocument)
-class CategoryDocumentAdmin(admin.ModelAdmin):
-    list_display = ("name", "is_published")
+# @admin.register(CategoryDocument)
+# class CategoryDocumentAdmin(admin.ModelAdmin):
+#     list_display = ("name", "is_published")
 
 
 @admin.register(Document)
