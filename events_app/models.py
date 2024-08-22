@@ -3,7 +3,7 @@ from django.db import models
 NULLABLE = {'blank': True, 'null': True}
 
 
-class Events(models.Model):
+class Event(models.Model):
 
     name_of_event = models.CharField(max_length=500, verbose_name='название мероприятия')
     description_of_event = models.TextField(verbose_name='описание мероприятия')
@@ -20,7 +20,7 @@ class Events(models.Model):
 
 class EventPhoto(models.Model):
 
-    event = models.ForeignKey(Events, on_delete=models.CASCADE, related_name='photo')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='photo')
     photo = models.ImageField(upload_to='events/photo/%Y/%m/%d', **NULLABLE)
 
     def __str__(self):
@@ -33,7 +33,7 @@ class EventPhoto(models.Model):
 
 class EventVideo(models.Model):
 
-    event = models.ForeignKey(Events, on_delete=models.CASCADE, related_name='video')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='video')
     video = models.FileField(upload_to='events/video/%Y/%m/%d', **NULLABLE)
 
     def __str__(self):
@@ -45,7 +45,7 @@ class EventVideo(models.Model):
 
 
 class EventLinkVideo(models.Model):
-    event = models.ForeignKey(Events, on_delete=models.CASCADE, related_name='link_video')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='link_video')
     link_video = models.TextField(verbose_name='ссылка на видео')
     date = models.DateField(auto_now_add=True, verbose_name='дата добавления', **NULLABLE)
 

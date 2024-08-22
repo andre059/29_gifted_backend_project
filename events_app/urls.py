@@ -5,7 +5,6 @@ from events_app.apps import EventsAppConfig
 from events_app.views import EventsAPIView
 
 
-
 app_name = EventsAppConfig.name
 router = DefaultRouter()
 router.register(r'', EventsAPIView)
