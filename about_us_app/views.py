@@ -8,6 +8,7 @@ from .serializers import (
 
 
 class TeamMemberViewSet(viewsets.ModelViewSet):
+    """ API view for team members """
     queryset = TeamMember.objects.all()
     serializer_class = TeamMemberSerializer
 
