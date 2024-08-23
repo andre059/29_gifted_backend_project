@@ -9,4 +9,4 @@ class FeedbackAPIView(viewsets.ModelViewSet):
         просмотра всего списка отзывов и просмотра отдельного отзыва"""
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    pagination_class = FeedbackPaginator
+    
