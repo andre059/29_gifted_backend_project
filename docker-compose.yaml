@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
     volumes:
-      - ./postgres_db/:/var/lib/postgresql/data
+      - ${DB_VOLUME}:/var/lib/postgresql/data
 
   web:
     build:
@@ -18,7 +18,7 @@ services:
     command: python manage.py runserver "0.0.0.0:8000"
     # command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - .:/app
+      - ${APP_VOLUME}:/app
     ports:
       - 8000:8000
     environment:
