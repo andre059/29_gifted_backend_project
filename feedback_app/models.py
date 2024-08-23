@@ -5,9 +5,9 @@ from config import settings
 NULLABLE = {'blank': True, 'null': True}
 
 
-def feedback_preview_path(instance: 'Feedback', filename: str) -> str:
+def feedback_preview_path(filename: str) -> str:
     """Функция для создания кастомной папки сохранения изображений"""
-    return 'preview/feedback/{filename}'
+    return f'preview/feedback/{filename}'
 
 
 class Feedback(models.Model):

@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'friends_app',
     'news_app',
     'projects_app',
+    'feedback_app',
+
 ]
 
 MIDDLEWARE = [

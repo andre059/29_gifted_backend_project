@@ -4,11 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/about-us/', include('about_us_app.urls', namespace='about-us')),
     path('api/event/', include('events_app.urls', namespace='event')),
+    path('api/feedback/', include('feedback_app.urls', namespace='feedback'))
 ]
 if settings.DEBUG:
     urlpatterns.extend(
