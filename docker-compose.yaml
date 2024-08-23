@@ -11,18 +11,18 @@ services:
     volumes:
       - ./postgres_db/:/var/lib/postgresql/data
 
-  # web:
-  #   build:
-  #     context: .
-  #   container_name: django_app
-  #   command: python manage.py runserver "0.0.0.0:8000"
-  #   # command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
-  #   volumes:
-  #     - .:/app
-  #   ports:
-  #     - 8000:8000
-  #   environment:
-  #     - DJANGO_SETTINGS_MODULE=config.settings
-  #     - DATABASE_URL=postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
-  #   depends_on:
-  #     - db
+  web:
+    build:
+      context: .
+    container_name: django_app
+    command: python manage.py runserver "0.0.0.0:8000"
+    # command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+    depends_on:
+      - db
