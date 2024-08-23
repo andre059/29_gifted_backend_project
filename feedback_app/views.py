@@ -1,5 +1,4 @@
 from feedback_app.models import Feedback
-from feedback_app.paginators import FeedbackPaginator
 from feedback_app.serializers import FeedbackSerializer
 from rest_framework import viewsets
 
