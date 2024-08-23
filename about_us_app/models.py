@@ -61,22 +61,6 @@ class TeamMember(Abstract):
         return f"{self.name} {self.last_name} - {self.role}"
 
 
-# class CategoryDocument(Abstract):
-#     name = models.CharField(
-#         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
-#         verbose_name="Категория",
-#         max_length=20,
-#         null=False,
-#         help_text="Текст не более 20 символов",
-#     )
-
-#     class Meta:
-#         verbose_name = "Категорию документов"
-#         verbose_name_plural = "Категории документов"
-
-#     def __str__(self):
-#         return f"{self.name}"
-
 
 class Document(Abstract):
     name = models.CharField(
@@ -163,12 +147,7 @@ class OrganizationDetail(Abstract):
         max_length=20,
         help_text="Состоит из 20 цифр",
     )
-    director = models.CharField(
-        validators=[RegexValidator(regex=r"\D")],
-        verbose_name="Директор",
-        max_length=100,
-        help_text="Текст не более 100 символов (цифры запрещены)",
-    )
+    
     link = models.ImageField(
         verbose_name="QR-код банка",
         upload_to=docs_path,

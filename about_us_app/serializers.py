@@ -5,29 +5,16 @@ from .models import TeamMember, Document, OrganizationDetail
 class TeamMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamMember
-        fields = ["id", "name", "last_name", "role", "link"]
+        fields = '__all__'
 
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ("id", "name", "category", "link", "description")
+        fields = '__all__'
 
 
 class OrganizationDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizationDetail
-        fields = (
-            "id",
-            "name",
-            "legal_address",
-            "ogrn_number",
-            "inn_number",
-            "kpp_number",
-            "current_account",
-            "address",
-            "bik",
-            "correspondent_account",
-            "director",
-            "link",
-        )
+        fields = '__all__'

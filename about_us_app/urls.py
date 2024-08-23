@@ -6,9 +6,9 @@ from .views import TeamMemberViewSet, DocumentViewSet, OrganizationDetailViewSet
 app_name = AboutUsAppConfig.name
 router = DefaultRouter()
 
-router.register(r"", TeamMemberViewSet)
-router.register(r"", DocumentViewSet)
-router.register(r"", OrganizationDetailViewSet)
+router.register(r"team", TeamMemberViewSet)
+router.register(r"doc", DocumentViewSet)
+router.register(r"org", OrganizationDetailViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

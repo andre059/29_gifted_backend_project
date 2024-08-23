@@ -8,10 +8,6 @@ class TeamMemberAdmin(admin.ModelAdmin):
     search_fields = ("name", "last_name", "role", "is_published")
 
 
-# @admin.register(CategoryDocument)
-# class CategoryDocumentAdmin(admin.ModelAdmin):
-#     list_display = ("name", "is_published")
-
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
@@ -31,7 +27,6 @@ class OrganizationDetailAdmin(admin.ModelAdmin):
         "current_account",
         "bik",
         "correspondent_account",
-        "director",
         "link",
         "is_published",
     )
