@@ -18,3 +18,9 @@ class OrganizationDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizationDetail
         fields = '__all__'
+
+
+class CombinedSerializer(serializers.Serializer):
+    team = TeamMemberSerializer(many=True)
+    doc = DocumentSerializer(many=True)
+    org = OrganizationDetailSerializer(many=True)
