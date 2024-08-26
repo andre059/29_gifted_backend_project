@@ -28,19 +28,22 @@ class Abstract(models.Model):
 
 class TeamMember(Abstract):
     name = models.CharField(
+        # валидатор только слово из букв, исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
-        max_length=100,
+        max_length=50, # думаю, имя не должно быть длиннее
         verbose_name="Имя",
-        help_text="Текст не более 100 символов (цифры запрещены)",
+        help_text="Только буквы не более 50 символов",
     )
     last_name = models.CharField(
+        # валидатор только слово из букв, исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
-        max_length=100,
+        max_length=50, # думаю, фамилия не должна быть длиннее
         verbose_name="Фамилия",
-        help_text="Текст не более 100 символов (цифры запрещены)",
+        help_text="Только буквы не более 50 символов",
     )
     role = models.CharField(
-        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
+        # валидатор только буквы и знаки, исключая цифры
+        validators=[RegexValidator(regex=r"[^[^0-9]+$")],
         max_length=100,
         verbose_name="Роль в проекте",
         help_text="Текст не более 100 символов (цифры запрещены)",
@@ -64,10 +67,10 @@ class TeamMember(Abstract):
 
 class Document(Abstract):
     name = models.CharField(
-        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
+        # валидация не нужна, в имени документа все ж могут быть и цифры и другие знаки
         verbose_name="Название",
         max_length=100,
-        help_text="Текст не более 100 символов (цифры запрещены)",
+        help_text="Текст не более 100 символов",
     )
     category = models.CharField(verbose_name="Категория", null=False, choices=CHOISE)
     link = models.FileField(
@@ -76,7 +79,7 @@ class Document(Abstract):
         help_text="Добавьте документ (обязательно)",
     )
     description = models.TextField(
-        verbose_name="Описание", help_text="Текстовое поле без ограничений"
+        verbose_name="Описание", help_text="Текст без ограничений"
     )
 
     class Meta:
@@ -89,6 +92,7 @@ class Document(Abstract):
 
 class OrganizationDetail(Abstract):
     name = models.CharField(
+        # валидатор на буквы и пробелы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
         verbose_name="Название",
         max_length=100,
@@ -106,6 +110,7 @@ class OrganizationDetail(Abstract):
     )
     # ОГРН ― это код из 13 цифр, разделенных на шесть групп. Пример: 1 21 55 73 93522 0
     ogrn_number = models.CharField(
+        # тут и ниже валидация только на определенное кол-во цифр
         validators=[RegexValidator(regex=r"\d{13}")],
         verbose_name="ОГРН",
         max_length=13,
@@ -163,8 +168,10 @@ class OrganizationDetail(Abstract):
         return f"{self.name}"
 
 
-@receiver(post_delete)
-def delete_mediafile_on_delete(instance, **kwargs):
+@receiver(post_delete, sender=TeamMember)
+@receiver(post_delete, sender=Document)
+@receiver(post_delete, sender=OrganizationDetail)
+def delete_mediafile_on_delete(sender, instance, **kwargs):
     """
     Удаляет медиафайл из папки при удалении записи в БД
     """
