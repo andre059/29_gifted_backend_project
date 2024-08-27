@@ -23,6 +23,8 @@ urlpatterns = [
     path('api/feedback/', include('feedback_app.urls', namespace='feedback')),
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
+    path('api/news/', include('news_app.urls', namespace='news_app')),
+    
 ]
 if settings.DEBUG:
     urlpatterns.extend(
