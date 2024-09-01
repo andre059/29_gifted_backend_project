@@ -6,7 +6,7 @@ from .views import NewsViewSet
 app_name = NewsAppConfig.name
 router = DefaultRouter()
 
-router.register(r"news", NewsViewSet)
+router.register(r'', NewsViewSet)
 
 
 urlpatterns = [
