@@ -140,3 +140,5 @@ data/*
 /.venv
 postgres_db
 /media
+/.vscode
+/env

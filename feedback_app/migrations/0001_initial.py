@@ -16,12 +16,12 @@ class Migration(migrations.Migration):
             name='Feedback',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='имя')),
-                ('lastname', models.CharField(max_length=100, verbose_name='фамилия')),
-                ('surname', models.CharField(blank=True, max_length=100, null=True, verbose_name='отчество')),
-                ('preview', models.ImageField(blank=True, null=True, upload_to=feedback_app.models.feedback_preview_path, verbose_name='фотография')),
-                ('date_create', models.DateTimeField(blank=True, null=True, verbose_name='дата создания')),
-                ('content', models.TextField(blank=True, db_index=True, verbose_name='содержимое')),
+                ('name', models.CharField(max_length=100, verbose_name='Имя')),
+                ('lastname', models.CharField(max_length=100, verbose_name='Фамилия')),
+                ('surname', models.CharField(blank=True, max_length=100, null=True, verbose_name='Отчество')),
+                ('preview', models.ImageField(blank=True, null=True, upload_to=feedback_app.models.docs_path, verbose_name='Фотография')),
+                ('date_create', models.DateTimeField(blank=True, null=True, verbose_name='Дата создания')),
+                ('content', models.TextField(blank=True, db_index=True, verbose_name='Содержимое')),
             ],
             options={
                 'verbose_name': 'Отзыв',
