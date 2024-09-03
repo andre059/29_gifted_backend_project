@@ -25,6 +25,7 @@ urlpatterns = [
          name='schema-swagger-ui'),
     path('api/news/', include('news_app.urls', namespace='news_app')),
     path('api/project/', include('projects_app.urls', namespace='project')),
+    path('api/friends/', include('friends_app.urls', namespace='friends')),
 ]
 if settings.DEBUG:
     urlpatterns.extend(
