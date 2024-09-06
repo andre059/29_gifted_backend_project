@@ -1,6 +1,9 @@
+import shutil
+import os
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.core.validators import RegexValidator
 from django.db import models
-
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -18,10 +21,9 @@ def docs_path(instance, filename: str) -> str:
 class Project(models.Model):
     name = models.CharField(# валидатор только слово из букв, исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
-        max_length=50,  # думаю, имя не должно быть длиннее
+        max_length=300,  # думаю, имя не должно быть длиннее
         verbose_name="Наименование проекта",
         help_text="Только буквы не более 50 символов")
-    preview = models.ImageField(upload_to=docs_path, verbose_name='фотография', **NULLABLE)
     content = models.TextField(null=False, blank=True, db_index=True, verbose_name='содержимое')
 
 
@@ -39,3 +41,33 @@ class Project(models.Model):
     class Meta:
         verbose_name = 'Проект'
         verbose_name_plural = 'Проекты'
+
+class ProjectImage(models.Model):
+    project = models.ForeignKey(Project, related_name='images', on_delete=models.CASCADE, verbose_name="Проект")
+    image = models.ImageField(upload_to=docs_path, verbose_name="Изображение")
+
+    class Meta:
+        verbose_name = "Изображение"
+        verbose_name_plural = "Изображения"
+
+    def __str__(self):
+        return f"Изображение: {self.project.name}"
+
+@receiver(post_delete, sender=Project)
+@receiver(post_delete, sender=ProjectImage)
+def delete_media_on_delete(sender, instance, **kwargs):
+    if isinstance(instance, Project):
+        # Если удаляется проект, удаляем всю папку с медиафайлами
+        folder_path = os.path.join('media', f'projects/{instance.id}')
+        if os.path.exists(folder_path):
+            try:
+                shutil.rmtree(folder_path)
+            except Exception as e:
+                print(f"Error removing {folder_path}: {e}")
+    elif isinstance(instance, ProjectImage):
+        if instance.image:
+            image_path = instance.image.path
+            try:
+                os.remove(image_path)
+            except FileNotFoundError:
+                pass

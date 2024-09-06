@@ -23,14 +23,14 @@ class Friend(Abstract):
     name = models.CharField(
         # валидатор только слово из букв и "-", исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я-]+$")],
-        max_length=50,
+        max_length=100,
         verbose_name="Имя",
         help_text="Только буквы и '-' не более 50 символов",
     )
     last_name = models.CharField(
         # валидатор только слово из букв и "-", исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я-]+$")],
-        max_length=50,
+        max_length=100,
         verbose_name="Фамилия",
         help_text="Только буквы и '-' не более 50 символов",
     )
@@ -58,7 +58,7 @@ class Company(Abstract):
     name = models.CharField(
         # валидация не нужна, в имени компании могут быть и цифры и другие знаки
         verbose_name="Название",
-        max_length=100,
+        max_length=300,
         help_text="Текст не более 100 символов",
     )
     link = models.ImageField(
@@ -107,14 +107,14 @@ class Volunteer(models.Model):
     name = models.CharField(
         # валидатор только слово из букв и "-", исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я-]+$")],
-        max_length=50,
+        max_length=100,
         verbose_name="Имя",
         help_text="Только буквы и '-' не более 50 символов",
     )
     last_name = models.CharField(
         # валидатор только слово из букв и "-", исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я-]+$")],
-        max_length=50,
+        max_length=100,
         verbose_name="Фамилия",
         help_text="Только буквы и '-' не более 50 символов",
     )

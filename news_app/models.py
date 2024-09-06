@@ -8,7 +8,7 @@ from news_app.utils import docs_path
 
 class News(models.Model):
     created_at = models.DateTimeField(verbose_name="Дата создания") 
-    title = models.CharField(max_length=30, verbose_name="Заголовок")
+    title = models.CharField(max_length=300, verbose_name="Заголовок")
     content = models.TextField(verbose_name="Содержание")
     video = models.URLField(blank=True, null=True, verbose_name="Видео")  
     short_description = models.TextField(verbose_name="Краткое описание", blank=True, null=True)

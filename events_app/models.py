@@ -20,9 +20,9 @@ class Event(models.Model):
 
     name_of_event = models.CharField(
         # возможно, тут достаточно 200
-        max_length=200,
+        max_length=300,
         verbose_name="Название мероприятия",
-        help_text="Текст не более 200 символов",
+        help_text="Текст не более 300 символов",
     )
     description_of_event = models.TextField(
         verbose_name="Описание мероприятия", help_text="Текст без ограничений"
@@ -34,7 +34,10 @@ class Event(models.Model):
         help_text="Текст не более 500 символов",
     )
     date_time_of_event = models.DateTimeField(
-        verbose_name="Время проведения мероприятия", **NULLABLE
+        verbose_name="Дата и время проведения мероприятия", **NULLABLE
+    )
+    end_of_event = models.DateTimeField(
+        verbose_name="Дата и время завершения мероприятия", **NULLABLE
     )
 
     @property
