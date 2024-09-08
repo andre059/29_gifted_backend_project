@@ -26,6 +26,8 @@ urlpatterns = [
     path('api/news/', include('news_app.urls', namespace='news_app')),
     path('api/project/', include('projects_app.urls', namespace='project')),
     path('api/friends/', include('friends_app.urls', namespace='friends')),
+    path('api/team/', include('team.urls', namespace='team')),
+    
 ]
 if settings.DEBUG:
     urlpatterns.extend(
