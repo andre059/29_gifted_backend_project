@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'news_app',
     'projects_app',
     'feedback_app',
+    'team',
+    
 
 ]
 
