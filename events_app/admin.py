@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from events_app.models import Event, EventPhoto, EventVideo, EventLinkVideo
+from events_app.models import Event, EventPhoto, EventVideo, EventLinkVideo, Registration
 
 
 class EventPhotoInline(admin.TabularInline):
@@ -18,8 +18,13 @@ class EventLinkVideoInline(admin.TabularInline):
     extra = 1
 
 
+class RegistrationInline(admin.TabularInline):
+    model = Registration
+    extra = 1
+
+
 @admin.register(Event)
 class EventsAdmin(admin.ModelAdmin):
     list_display = ('name_of_event', 'description_of_event', 'address_of_event', 'date_time_of_event')
     list_filter = ('name_of_event', 'description_of_event', 'address_of_event', 'date_time_of_event')
-    inlines = [EventPhotoInline, EventVideoInline, EventLinkVideoInline]
+    inlines = [EventPhotoInline, EventVideoInline, EventLinkVideoInline, RegistrationInline]

@@ -1,3 +1,5 @@
+from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 import os
 from django.db.models.signals import post_delete
@@ -20,9 +22,9 @@ class Event(models.Model):
 
     name_of_event = models.CharField(
         # возможно, тут достаточно 200
-        max_length=200,
+        max_length=300,
         verbose_name="Название мероприятия",
-        help_text="Текст не более 200 символов",
+        help_text="Текст не более 300 символов",
     )
     description_of_event = models.TextField(
         verbose_name="Описание мероприятия", help_text="Текст без ограничений"
@@ -34,7 +36,10 @@ class Event(models.Model):
         help_text="Текст не более 500 символов",
     )
     date_time_of_event = models.DateTimeField(
-        verbose_name="Время проведения мероприятия", **NULLABLE
+        verbose_name="Дата и время проведения мероприятия", **NULLABLE
+    )
+    end_of_event = models.DateTimeField(
+        verbose_name="Дата и время завершения мероприятия", **NULLABLE
     )
 
     @property
@@ -92,6 +97,102 @@ class EventLinkVideo(models.Model):
     class Meta:
         verbose_name = "ссылка на видео мероприятия"
         verbose_name_plural = "ссылки на видео мероприятия"
+
+
+phone_regex = RegexValidator(
+    regex=r'^\+?1?\d{9,15}$',
+    message=_("Введите корректный номер телефона"),
+    )
+
+
+class Registration(models.Model):
+    """Модель для записи на мероприятие"""
+
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="registrations", verbose_name="Мероприятие")
+
+    first_name = models.CharField(
+        max_length=64,
+        validators=[
+            MinLengthValidator(1, _("Имя должно быть не менее 1 символа")),
+            MaxLengthValidator(64, _("Имя должно быть не более 64 символов")),
+            RegexValidator(
+                regex=r'^[A-Za-zА-Яа-я\- ]+$',
+                message=_("Имя может содержать только кириллицу, латиницу, пробел и тире")
+            ),
+            RegexValidator(
+                regex=r'^(?!.[A-Za-z].[А-Яа-я]|[А-Яа-я].[A-Za-z]).$',
+                message=_("Нельзя использовать кириллицу и латиницу одновременно")
+            ),
+            RegexValidator(
+                regex=r'^(?!.[\d\W]{3}).$',
+                message=_("Нельзя использовать больше 2х спец символов подряд")
+            ),
+        ],
+        verbose_name="Имя",
+    )
+
+    last_name = models.CharField(
+        max_length=64,
+        validators=[
+            MinLengthValidator(1, _("Фамилия должна быть не менее 1 символа")),
+            MaxLengthValidator(64, _("Фамилия должна быть не более 64 символов")),
+            RegexValidator(
+                regex=r'^[A-Za-zА-Яа-я\- ]+$',
+                message=_("Фамилия может содержать только кириллицу, латиницу, пробел и тире")
+            ),
+            RegexValidator(
+                regex=r'^(?!.[A-Za-z].[А-Яа-я]|[А-Яа-я].[A-Za-z]).$',
+                message=_("Нельзя использовать кириллицу и латиницу одновременно")
+            ),
+            RegexValidator(
+                regex=r'^(?!.[\d\W]{3}).$',
+                message=_("Нельзя использовать больше 2х спец символов подряд")
+            ),
+        ],
+        verbose_name="Фамилия",
+    )
+
+    phone = models.CharField(
+        max_length=20,
+        validators=[
+            phone_regex,  # Валидация номера телефона
+        ],
+        verbose_name="Телефон",
+    )
+
+    email = models.EmailField(
+        unique=True,
+        validators=[
+            MaxLengthValidator(254, _("Email не может быть длиннее 254 символов")),
+            RegexValidator(
+                regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                message=_("Некорректный email адрес")
+            ),
+        ],
+        verbose_name="Электронная почта",
+    )
+
+    comment = models.TextField(
+        blank=True,
+        verbose_name="Комментарий"
+    )
+
+    timestamp = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата и время регистрации"
+    )
+
+    terms_agreed = models.BooleanField(
+        default=False,
+        verbose_name="Согласие с условиями"
+    )
+
+    def __str__(self):
+        return f"Регистрация на {self.event} - {self.first_name} {self.last_name}"
+
+    class Meta:
+        verbose_name = "Регистрация на мероприятие"
+        verbose_name_plural = "Регистрация на мероприятия"
 
 
 @receiver(post_delete, sender=EventPhoto)
