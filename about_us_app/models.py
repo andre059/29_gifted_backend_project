@@ -152,6 +152,15 @@ class OrganizationDetail(Abstract):
         max_length=20,
         help_text="Состоит из 20 цифр",
     )
+    director = models.CharField(
+        # валидатор только слово из букв, исключая остальные символы
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
+        max_length=200, # думаю, имя не должно быть длиннее
+        verbose_name="ФИО директора",
+        help_text="Только буквы не более 50 символов",
+        default="Иванов Иван Иванович"
+        
+    )
     
     link = models.ImageField(
         verbose_name="QR-код банка",
