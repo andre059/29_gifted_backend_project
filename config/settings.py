@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'news_app',
     'projects_app',
     'feedback_app',
+    'transfer_app',
 
 ]
 
