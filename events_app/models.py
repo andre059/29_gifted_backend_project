@@ -5,7 +5,8 @@ import os
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
-from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, validate_phone
+from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, validate_phone, \
+    validate_number_of_spaces_or_dashes
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -113,6 +114,7 @@ class Registration(models.Model):
             MaxLengthValidator(64, _("Имя должно быть не более 64 символов")),
             validate_name_or_surname,
             validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes,
         ],
         verbose_name="Имя",
     )
@@ -124,6 +126,7 @@ class Registration(models.Model):
             MaxLengthValidator(64, _("Фамилия должна быть не более 64 символов")),
             validate_name_or_surname,
             validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes
         ],
         verbose_name="Фамилия",
     )

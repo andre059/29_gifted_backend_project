@@ -20,6 +20,13 @@ def validate_name_or_surname(value):
     )(value)
 
 
+def validate_number_of_spaces_or_dashes(value):
+    """Проверка имени или фамилии: не более 2-х пробелов или тире подряд."""
+    if re.search(r'[\s\-]{3}', value):
+        raise ValidationError("Нельзя использовать больше 2-х пробелов или тире подряд.")
+    return value
+
+
 def validate_email(value):
     """Проверка формата email."""
     return RegexValidator(
