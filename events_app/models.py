@@ -5,6 +5,8 @@ import os
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
+from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email
+
 NULLABLE = {"blank": True, "null": True}
 
 
@@ -99,12 +101,6 @@ class EventLinkVideo(models.Model):
         verbose_name_plural = "ссылки на видео мероприятия"
 
 
-phone_regex = RegexValidator(
-    regex=r'^\+?1?\d{9,15}$',
-    message=_("Введите корректный номер телефона"),
-    )
-
-
 class Registration(models.Model):
     """Модель для записи на мероприятие"""
 
@@ -115,18 +111,8 @@ class Registration(models.Model):
         validators=[
             MinLengthValidator(1, _("Имя должно быть не менее 1 символа")),
             MaxLengthValidator(64, _("Имя должно быть не более 64 символов")),
-            RegexValidator(
-                regex=r'^[A-Za-zА-Яа-я\- ]+$',
-                message=_("Имя может содержать только кириллицу, латиницу, пробел и тире")
-            ),
-            RegexValidator(
-                regex=r'^(?!.[A-Za-z].[А-Яа-я]|[А-Яа-я].[A-Za-z]).$',
-                message=_("Нельзя использовать кириллицу и латиницу одновременно")
-            ),
-            RegexValidator(
-                regex=r'^(?!.[\d\W]{3}).$',
-                message=_("Нельзя использовать больше 2х спец символов подряд")
-            ),
+            validate_name_or_surname,
+            validate_no_mixed_scripts,
         ],
         verbose_name="Имя",
     )
@@ -136,18 +122,8 @@ class Registration(models.Model):
         validators=[
             MinLengthValidator(1, _("Фамилия должна быть не менее 1 символа")),
             MaxLengthValidator(64, _("Фамилия должна быть не более 64 символов")),
-            RegexValidator(
-                regex=r'^[A-Za-zА-Яа-я\- ]+$',
-                message=_("Фамилия может содержать только кириллицу, латиницу, пробел и тире")
-            ),
-            RegexValidator(
-                regex=r'^(?!.[A-Za-z].[А-Яа-я]|[А-Яа-я].[A-Za-z]).$',
-                message=_("Нельзя использовать кириллицу и латиницу одновременно")
-            ),
-            RegexValidator(
-                regex=r'^(?!.[\d\W]{3}).$',
-                message=_("Нельзя использовать больше 2х спец символов подряд")
-            ),
+            validate_name_or_surname,
+            validate_no_mixed_scripts,
         ],
         verbose_name="Фамилия",
     )
@@ -155,7 +131,10 @@ class Registration(models.Model):
     phone = models.CharField(
         max_length=20,
         validators=[
-            phone_regex,  # Валидация номера телефона
+            RegexValidator(
+                regex=r'^\+?1?\d{9,15}$',
+                message=_("Введите корректный номер телефона"),
+            )
         ],
         verbose_name="Телефон",
     )
@@ -164,10 +143,7 @@ class Registration(models.Model):
         unique=True,
         validators=[
             MaxLengthValidator(254, _("Email не может быть длиннее 254 символов")),
-            RegexValidator(
-                regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                message=_("Некорректный email адрес")
-            ),
+            validate_email,
         ],
         verbose_name="Электронная почта",
     )
