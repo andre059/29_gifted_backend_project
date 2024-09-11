@@ -34,6 +34,8 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def send_registration_email(self, registration):
+        """ Send registration email """
+
         subject = f"Регистрация на мероприятие: {registration.event.name_of_event}"
         message = f"Заявка на регистрацию от {registration.first_name} {registration.last_name}\n\n" \
                   f"Телефон: {registration.phone}\n" \
