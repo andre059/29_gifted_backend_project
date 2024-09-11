@@ -26,3 +26,11 @@ def validate_email(value):
         regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
         message=_("Некорректный email адрес")
     )(value)
+
+
+def validate_phone(value):
+    """Проверка формата телефона."""
+    return RegexValidator(
+        regex=r'^\+?1?\d{9,15}$',
+        message=_("Введите корректный номер телефона")
+    )(value)

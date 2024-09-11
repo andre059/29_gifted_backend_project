@@ -5,7 +5,7 @@ import os
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
-from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email
+from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, validate_phone
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -131,10 +131,7 @@ class Registration(models.Model):
     phone = models.CharField(
         max_length=20,
         validators=[
-            RegexValidator(
-                regex=r'^\+?1?\d{9,15}$',
-                message=_("Введите корректный номер телефона"),
-            )
+            validate_phone,
         ],
         verbose_name="Телефон",
     )
