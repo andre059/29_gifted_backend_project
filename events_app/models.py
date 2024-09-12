@@ -1,4 +1,4 @@
-from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 import os
@@ -6,7 +6,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
 from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, validate_phone, \
-    validate_number_of_spaces_or_dashes
+    validate_number_of_spaces_or_dashes, validate_unique_comment
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -150,6 +150,10 @@ class Registration(models.Model):
 
     comment = models.TextField(
         blank=True,
+        validators=[
+            validate_unique_comment,
+            # lambda x: validate_unique_comment(x, Registration)
+        ],
         verbose_name="Комментарий"
     )
 

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from django.core.mail import send_mail
@@ -18,29 +19,32 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
 
-    def create(self, request, args, kwargs):
-        """ Redefining the create method for registration processing """
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        event_id = request.data.get('event')
-        event = Event.objects.get(pk=event_id)  # Получаем  событие
-        registration = serializer.save(event=event)  # Сохраняем  регистрацию
+    def post(self, request):
+        serializer = RegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            event_id = request.data.get('event')
+            event = Event.objects.get(pk=event_id)
 
-        # Отправка письма
-        self.send_registration_email(registration)
+            registration = serializer.save(event=event)
 
-        # Успешная  регистрация
-        messages.success(request, "Вы успешно зарегистрировались на мероприятие!")
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Отправка письма
+            self.send_registration_email(registration)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def register(self, request):
+        return self.post(request)
 
     def send_registration_email(self, registration):
         """ Send registration email """
 
         subject = f"Регистрация на мероприятие: {registration.event.name_of_event}"
         message = f"Заявка на регистрацию от {registration.first_name} {registration.last_name}\n\n" \
-                  f"Телефон: {registration.phone}\n" \
-                  f"Email: {registration.email}\n" \
-                  f"Комментарий: {registration.comment}\n"
+                f"Телефон: {registration.phone}\n" \
+                f"Email: {registration.email}\n" \
+                f"Комментарий: {registration.comment}\n"
         from_email = "noreply@yourdomain.com"  # Замените на адрес отправителя письма
         to_email = registration.email  # Адрес получателя письма
         send_mail(subject, message, from_email, [to_email])
