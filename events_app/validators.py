@@ -64,8 +64,8 @@ def validate_phone(value):
 
 def validate_unique_comment(value):
     """Проверка уникальности комментария в рамках модели Registration."""
-    # if not isinstance(value, Model):
-    #     raise ValidationError(_("Неверный тип данных для комментария."))
+    if not isinstance(value, Model):
+        raise ValidationError(_("Неверный тип данных для комментария."))
 
     registration = value
     if registration.pk is None:
