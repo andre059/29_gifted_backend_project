@@ -1,4 +1,7 @@
+import hashlib
+
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -22,15 +25,16 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            event_id = request.data.get('event')
-            event = Event.objects.get(pk=event_id)
-
-            registration = serializer.save(event=event)
-
-            # Отправка письма
-            self.send_registration_email(registration)
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            try:
+                event_id = request.data.get('event')
+                event = Event.objects.get(pk=event_id)
+                registration = serializer.save(event=event)
+                # Отправка письма
+                self.send_registration_email(registration)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except ValidationError as e:
+                # Возвращаем сообщение об ошибке
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])

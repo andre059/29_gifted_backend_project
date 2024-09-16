@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -6,7 +7,8 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
 from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, validate_phone, \
-    validate_number_of_spaces_or_dashes, validate_unique_comment
+    validate_number_of_spaces_or_dashes
+from users.models import User
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -86,6 +88,7 @@ class EventVideo(models.Model):
 
 
 class EventLinkVideo(models.Model):
+
     event = models.ForeignKey(
         Event, on_delete=models.CASCADE, related_name="link_video"
     )
@@ -140,7 +143,6 @@ class Registration(models.Model):
     )
 
     email = models.EmailField(
-        unique=True,
         validators=[
             MaxLengthValidator(254, _("Email не может быть длиннее 254 символов")),
             validate_email,
@@ -150,10 +152,6 @@ class Registration(models.Model):
 
     comment = models.TextField(
         blank=True,
-        validators=[
-            validate_unique_comment,
-            # lambda x: validate_unique_comment(x, Registration)
-        ],
         verbose_name="Комментарий"
     )
 
@@ -173,6 +171,7 @@ class Registration(models.Model):
     class Meta:
         verbose_name = "Регистрация на мероприятие"
         verbose_name_plural = "Регистрация на мероприятия"
+        unique_together = ('event', 'comment')
 
 
 @receiver(post_delete, sender=EventPhoto)
