@@ -23,11 +23,7 @@ urlpatterns = [
     path('api/feedback/', include('feedback_app.urls', namespace='feedback')),
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
-    path('api/news/', include('news_app.urls', namespace='news_app')),
-    path('api/project/', include('projects_app.urls', namespace='project')),
-    path('api/friends/', include('friends_app.urls', namespace='friends')),
-    path('api/team/', include('team.urls', namespace='team')),
-    
+    path('api/transfer/', include('transfer_app.urls', namespace='transfer')),
 ]
 if settings.DEBUG:
     urlpatterns.extend(

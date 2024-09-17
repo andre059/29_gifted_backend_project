@@ -1,7 +1,14 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator, MaxLengthValidator
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 import os
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+
+from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, validate_phone, \
+    validate_number_of_spaces_or_dashes
+from users.models import User
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -81,6 +88,7 @@ class EventVideo(models.Model):
 
 
 class EventLinkVideo(models.Model):
+
     event = models.ForeignKey(
         Event, on_delete=models.CASCADE, related_name="link_video"
     )
@@ -95,6 +103,75 @@ class EventLinkVideo(models.Model):
     class Meta:
         verbose_name = "ссылка на видео мероприятия"
         verbose_name_plural = "ссылки на видео мероприятия"
+
+
+class Registration(models.Model):
+    """Модель для записи на мероприятие"""
+
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="registrations", verbose_name="Мероприятие")
+
+    first_name = models.CharField(
+        max_length=64,
+        validators=[
+            MinLengthValidator(1, _("Имя должно быть не менее 1 символа")),
+            MaxLengthValidator(64, _("Имя должно быть не более 64 символов")),
+            validate_name_or_surname,
+            validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes,
+        ],
+        verbose_name="Имя",
+    )
+
+    last_name = models.CharField(
+        max_length=64,
+        validators=[
+            MinLengthValidator(1, _("Фамилия должна быть не менее 1 символа")),
+            MaxLengthValidator(64, _("Фамилия должна быть не более 64 символов")),
+            validate_name_or_surname,
+            validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes
+        ],
+        verbose_name="Фамилия",
+    )
+
+    phone = models.CharField(
+        max_length=20,
+        validators=[
+            validate_phone,
+        ],
+        verbose_name="Телефон",
+    )
+
+    email = models.EmailField(
+        validators=[
+            MaxLengthValidator(254, _("Email не может быть длиннее 254 символов")),
+            validate_email,
+        ],
+        verbose_name="Электронная почта",
+    )
+
+    comment = models.TextField(
+        blank=True,
+        verbose_name="Комментарий"
+    )
+
+    timestamp = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата и время регистрации"
+    )
+
+    terms_agreed = models.BooleanField(
+        default=False,
+        verbose_name="Согласие с условиями"
+    )
+
+    def __str__(self):
+        return f"Регистрация на {self.event} - {self.first_name} {self.last_name}"
+
+    class Meta:
+        verbose_name = "Регистрация на мероприятие"
+        verbose_name_plural = "Регистрация на мероприятия"
+        unique_together = ('event', 'comment')
 
 
 @receiver(post_delete, sender=EventPhoto)

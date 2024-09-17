@@ -29,3 +29,11 @@ class EventsSerializer(serializers.ModelSerializer):
             'address_of_event', 'date_time_of_event', 'end_of_event',
             'photo', 'video', 'link_video',
         ]
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), required=True)
+
+    class Meta:
+        model = Registration
+        fields = ['event', 'first_name', 'last_name', 'email', 'phone', 'comment', 'timestamp', 'terms_agreed',]

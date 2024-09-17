@@ -60,8 +60,7 @@ INSTALLED_APPS = [
     'news_app',
     'projects_app',
     'feedback_app',
-    'team',
-    
+    'transfer_app',
 
 ]
 
@@ -167,6 +166,10 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_ALL_HEADERS = True
-CORS_ALLOW_ALL_METHODS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
