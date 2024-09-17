@@ -5,13 +5,19 @@ from users.models import User
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        user = User.objects.create(
+        user, created = User.objects.get_or_create(
             username='Admin',
-            email='admin@gmail.com',
-            is_active=True,
-            is_staff=True,
-            is_superuser=True
+            defaults={
+                'email': 'admin@gmail.com',
+                'is_active': True,
+                'is_staff': True,
+                'is_superuser': True,
+            }
         )
 
-        user.set_password('zxc123qwe789')
-        user.save()
+        if created:
+            user.set_password('zxc123qwe789')
+            user.save()
+            self.stdout.write('Admin created')
+        else:
+            self.stdout.write('Admin already exists')

@@ -26,24 +26,23 @@ class Feedback(models.Model):
     name = models.CharField(
         # валидатор только слово из букв, исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
-        max_length=50,  # думаю, имя не должно быть длиннее
+        max_length=100,  # думаю, имя не должно быть длиннее
         verbose_name="Имя",
         help_text="Только буквы не более 50 символов",
     )
     lastname = models.CharField(
         # валидатор только слово из букв, исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
-        max_length=50,  # думаю, фамилия не должна быть длиннее
+        max_length=100,  # думаю, фамилия не должна быть длиннее
         verbose_name="Фамилия",
         help_text="Только буквы не более 50 символов",
     )
-    # отчество не требуется по ТЗ
-    # surname  = models.CharField(max_length=100, verbose_name='отчество', **NULLABLE)
+
     preview = models.ImageField(
-        upload_to=docs_path, verbose_name="Фотография", **NULLABLE
+        upload_to=docs_path, verbose_name="Фотография", **NULLABLE,
     )
-    # может быть для date_create все же надо "blank": False ??? и auto_now_add=True ???
-    date_create = models.DateTimeField(verbose_name="Дата создания", **NULLABLE)
+
+    date_create = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True,)
     content = models.TextField(
         null=False,
         blank=True,
