@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'projects_app',
     'feedback_app',
     'transfer_app',
+    'team',
 
 ]
 
@@ -173,3 +174,6 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_HEADERS = True
+CORS_ALLOW_ALL_METHODS = True

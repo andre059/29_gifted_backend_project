@@ -21,9 +21,13 @@ urlpatterns = [
     path('api/about-us/', include('about_us_app.urls', namespace='about-us')),
     path('api/event/', include('events_app.urls', namespace='event')),
     path('api/feedback/', include('feedback_app.urls', namespace='feedback')),
+    path('api/transfer/', include('transfer_app.urls', namespace='transfer')),
+    path('api/news/', include('news_app.urls', namespace='news_app')),
+    path('api/project/', include('projects_app.urls', namespace='project')),
+    path('api/friends/', include('friends_app.urls', namespace='friends')),
+    path('api/team/', include('team.urls', namespace='team')),
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
-    path('api/transfer/', include('transfer_app.urls', namespace='transfer')),
 ]
 if settings.DEBUG:
     urlpatterns.extend(

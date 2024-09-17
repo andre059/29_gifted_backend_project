@@ -42,7 +42,7 @@ class Feedback(models.Model):
         upload_to=docs_path, verbose_name="Фотография", **NULLABLE,
     )
 
-    date_create = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True,)
+    date_create = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True,**NULLABLE)
     content = models.TextField(
         null=False,
         blank=True,

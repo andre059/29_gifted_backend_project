@@ -92,8 +92,6 @@ class Document(Abstract):
 
 class OrganizationDetail(Abstract):
     name = models.CharField(
-        # валидатор на буквы и пробелы
-        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я ]+$")],
         verbose_name="Название",
         max_length=300,
         help_text="Текст не более 100 символов (цифры запрещены)",
