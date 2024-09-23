@@ -19,8 +19,7 @@ def docs_path(instance, filename: str) -> str:
 
 
 class Project(models.Model):
-    name = models.CharField(# валидатор только слово из букв, исключая остальные символы
-        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
+    name = models.CharField(
         max_length=300,  # думаю, имя не должно быть длиннее
         verbose_name="Наименование проекта",
         help_text="Только буквы не более 50 символов")
