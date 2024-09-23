@@ -3,7 +3,7 @@ from django.db import models
 from users.models import User
 
 
-class Transfer(models.Model):
+class Payment(models.Model):
     """Модель для разовых денежных переводов"""
 
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_transfers", verbose_name="Отправитель")

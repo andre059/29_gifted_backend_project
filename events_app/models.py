@@ -7,7 +7,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
 from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, validate_phone, \
-    validate_number_of_spaces_or_dashes
+    validate_number_of_spaces_or_dashes, validate_comment
 from users.models import User
 
 NULLABLE = {"blank": True, "null": True}
@@ -152,7 +152,11 @@ class Registration(models.Model):
 
     comment = models.TextField(
         blank=True,
-        verbose_name="Комментарий"
+        verbose_name="Комментарий",
+        validators=[
+            MaxLengthValidator(200, _("Комментарий не может быть длиннее 200 символов.")),
+            validate_comment,
+        ]
     )
 
     timestamp = models.DateTimeField(
@@ -171,7 +175,6 @@ class Registration(models.Model):
     class Meta:
         verbose_name = "Регистрация на мероприятие"
         verbose_name_plural = "Регистрация на мероприятия"
-        unique_together = ('event', 'comment')
 
 
 @receiver(post_delete, sender=EventPhoto)
