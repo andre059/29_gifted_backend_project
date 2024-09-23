@@ -1,26 +1,26 @@
 services:
-  db:
+  29_gifted_db:
     image: postgres:latest
-    container_name: db
+    container_name: 29_gifted_db
     ports:
-      - "${DB_PORT}:5432"
+      - "${29_GIFTED_DB_PORT}:5432"
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${29_GIFTED_DB_USER}
+      POSTGRES_PASSWORD: ${29_GIFTED_DB_PASS}
+      POSTGRES_DB: ${29_GIFTED_DB_NAME}
     volumes:
-      - ${DB_VOLUME}:/var/lib/postgresql/data
+      - ${29_GIFTED_DB_VOLUME}:/var/lib/postgresql/data
 
-  web:
+  29_gifted_web:
     build:
       context: .
-    container_name: django_app
+    container_name: 29_gifted_django_app
     volumes:
-      - ${APP_VOLUME}:/app
+      - ${29_GIFTED_APP_VOLUME}:/app
     ports:
       - 8000:8000
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings
-      - DATABASE_URL=postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - DATABASE_URL=postgres://${29_GIFTED_DB_USER}:${29_GIFTED_DB_PASS}@${29_GIFTED_DB_HOST}:${29_GIFTED_DB_PORT}/${29_GIFTED_DB_NAME}
     depends_on:
-      - db
+      - 29_gifted_db
