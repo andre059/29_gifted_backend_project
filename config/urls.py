@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/project/', include('projects_app.urls', namespace='project')),
     path('api/friends/', include('friends_app.urls', namespace='friends')),
     path('api/team/', include('team.urls', namespace='team')),
+    path('api/contacts/', include('contacts.urls', namespace='contacts')),
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
 ]
