@@ -69,3 +69,7 @@ urllib3==2.2.2
 utils==1.0.2
 wcwidth==0.2.13
 wsproto==1.2.0
+environs~=11.0.0
+yookassa~=3.3.0
+rollbar~=1.0.0
+transaction~=5.0
