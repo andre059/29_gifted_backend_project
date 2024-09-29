@@ -1,28 +1,26 @@
 services:
-  db:
+  gifted_29_db:
     image: postgres:latest
-    container_name: db
+    container_name: gifted_29_db
     ports:
-      - "${DB_PORT}:5432"
+      - "${GIFTED_29_DB_PORT}:5432"
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${GIFTED_29_DB_USER}
+      POSTGRES_PASSWORD: ${GIFTED_29_DB_PASS}
+      POSTGRES_DB: ${GIFTED_29_DB_NAME}
     volumes:
-      - ${DB_VOLUME}:/var/lib/postgresql/data
+      - ${GIFTED_29_DB_VOLUME}:/var/lib/postgresql/data
 
-  web:
+  gifted_29_web:
     build:
       context: .
-    container_name: django_app
-    command: python manage.py runserver "0.0.0.0:8000"
-    # command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    container_name: gifted_29_django_app
     volumes:
-      - ${APP_VOLUME}:/app
+      - ${GIFTED_29_APP_VOLUME}:/app
     ports:
       - 8000:8000
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings
-      - DATABASE_URL=postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - DATABASE_URL=postgres://${GIFTED_29_DB_USER}:${GIFTED_29_DB_PASS}@${GIFTED_29_DB_HOST}:${GIFTED_29_DB_PORT}/${GIFTED_29_DB_NAME}
     depends_on:
-      - db
+      - gifted_29_db

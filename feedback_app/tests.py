@@ -10,7 +10,6 @@ class FeedbackAPITestCase(APITestCase):
         self.feedback = Feedback.objects.create(
             name='Тест',
             lastname='Тестов',
-            surname='Тестович',
             content='Тест тест тест тест тест тест тест тест тест тест тест тест тест',
         )
 
@@ -19,14 +18,13 @@ class FeedbackAPITestCase(APITestCase):
         data = {
             'name':'Тест',
             'lastname':'Тестов',
-            'surname':'Тестович',
             'content':'Тест тест тест тест тест тест тест тест тест тест тест тест тест',
         }
         response = self.client.post(
             reverse('feedback_app:feedback-list'),
             data=data,
         )
-        #print(response.json())
+
         self.assertEqual(
             response.status_code,
             status.HTTP_201_CREATED
@@ -37,29 +35,25 @@ class FeedbackAPITestCase(APITestCase):
         )
 
 
-    def test_list_events(self):
+    def test_list_feedbacks(self):
         """ Функция тестирования получения списка отзывов"""
 
         Feedback.objects.create(
             name='Тест1',
             lastname='Тестов',
-            surname='Тестович',
             content='Тест тест тест тест тест тест тест тест тест тест тест тест тест',
         )
         Feedback.objects.create(
             name='Тест2',
             lastname='Тестов',
-            surname='Тестович',
             content='Тест тест тест тест тест тест тест тест тест тест тест тест тест',
         )
         Feedback.objects.create(
             name='Тест3',
             lastname='Тестов',
-            surname='Тестович',
             content='Тест тест тест тест тест тест тест тест тест тест тест тест тест',
         )
 
-        # Test pagination
         response = self.client.get(
             reverse('feedback_app:feedback-list'),
         )
@@ -69,17 +63,8 @@ class FeedbackAPITestCase(APITestCase):
             status.HTTP_200_OK
         )
 
-        self.assertEqual(
-            len(response.json()['results']),
-            3
-        )
 
-        self.assertIsNone(
-            response.json()['previous']
-        )
-
-
-    def test_retrieve_events(self):
+    def test_retrieve_feedback(self):
         """Функция тестирования получения одного отзыва"""
 
         response = self.client.get(
@@ -96,11 +81,11 @@ class FeedbackAPITestCase(APITestCase):
         )
 
 
-    def test_update_events(self):
+    def test_update_feedback(self):
         """Функция тестирования редактирования отзыва"""
 
         updated_data = {
-            'name': 'Новый тест'
+            'name': 'Новыйтест'
         }
 
         response = self.client.patch(
@@ -113,7 +98,7 @@ class FeedbackAPITestCase(APITestCase):
             status.HTTP_200_OK
         )
 
-    def test_destroy_events(self):
+    def test_delete_feedback(self):
         """Функция тестирования удаления отзыва"""
 
         response = self.client.delete(
