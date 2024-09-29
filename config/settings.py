@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'feedback_app',
     'transfer_app',
     'team',
+    'contacts',
 
 ]
 
@@ -177,3 +178,4 @@ EMAIL_USE_SSL = True
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_ALL_HEADERS = True
 CORS_ALLOW_ALL_METHODS = True
+MAX_BALANCE_DIGITS = 11

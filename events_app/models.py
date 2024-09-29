@@ -155,6 +155,8 @@ class Registration(models.Model):
         verbose_name="Комментарий",
         validators=[
             MaxLengthValidator(200, _("Комментарий не может быть длиннее 200 символов.")),
+            validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes,
             validate_comment,
         ]
     )
