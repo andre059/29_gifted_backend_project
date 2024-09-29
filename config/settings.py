@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'feedback_app',
     'transfer_app',
     'team',
+    'contacts',
 
 ]
 
