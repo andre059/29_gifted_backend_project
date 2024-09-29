@@ -42,8 +42,6 @@ class TeamMember(Abstract):
         help_text="Только буквы не более 50 символов",
     )
     role = models.CharField(
-        # валидатор только буквы и знаки, исключая цифры
-        validators=[RegexValidator(regex=r"[^[^0-9]+$")],
         max_length=100,
         verbose_name="Роль в проекте",
         help_text="Текст не более 100 символов (цифры запрещены)",
