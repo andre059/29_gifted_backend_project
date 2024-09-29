@@ -1,6 +1,3 @@
-import hashlib
-
-from django.contrib import messages
 from django.core.exceptions import ValidationError
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -46,9 +43,9 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
 
         subject = f"Регистрация на мероприятие: {registration.event.name_of_event}"
         message = f"Заявка на регистрацию от {registration.first_name} {registration.last_name}\n\n" \
-                f"Телефон: {registration.phone}\n" \
-                f"Email: {registration.email}\n" \
-                f"Комментарий: {registration.comment}\n"
+                  f"Телефон: {registration.phone}\n" \
+                  f"Email: {registration.email}\n" \
+                  f"Комментарий: {registration.comment}\n"
         from_email = "noreply@yourdomain.com"  # Замените на адрес отправителя письма
         to_email = registration.email  # Адрес получателя письма
         send_mail(subject, message, from_email, [to_email])
