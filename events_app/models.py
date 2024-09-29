@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -8,7 +7,6 @@ from django.dispatch import receiver
 
 from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, validate_phone, \
     validate_number_of_spaces_or_dashes, validate_comment
-from users.models import User
 
 NULLABLE = {"blank": True, "null": True}
 
