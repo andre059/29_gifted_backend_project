@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from django.core.validators import MaxLengthValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
-from django.db import models, transaction
+from django.db import models, transaction as tr
 
 from django.conf import settings
 from yookassa import Payment
@@ -62,7 +62,7 @@ class PaymentModel(models.Model):
         And we don't have  any guaranty that it was locked.
         """
 
-        with transaction.atomic():
+        with tr.atomic():
             payment = PaymentModel.objects.create(
                 transfer_amount=amount,
                 is_accepted=False,
