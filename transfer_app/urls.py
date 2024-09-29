@@ -1,14 +1,11 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
 from transfer_app.apps import PaymentAppConfig
-from transfer_app.views import PaymentViewSet
-
+from transfer_app.views import CreatePaymentView, CreatePaymentAcceptanceView
 
 app_name = PaymentAppConfig.name
-router = DefaultRouter()
-router.register(r'payment', PaymentViewSet, basename='payment')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('payment/', CreatePaymentView.as_view(), name='payment-create'),
+    path('payment/acceptance/', CreatePaymentAcceptanceView.as_view(), name='payment-acceptance'),
 ]

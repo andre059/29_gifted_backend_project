@@ -1,9 +1,10 @@
 from django.contrib import admin
 
-from transfer_app.models import Payment
+from transfer_app.models import PaymentModel
 
 
-@admin.register(Payment)
+@admin.register(PaymentModel)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('sender', 'recipient', 'amount', 'currency', 'status')
-    list_filter = ('status',)
+    list_display = ('name', 'surname', 'telephone', 'email', 'transfer_amount', 'type_transfer', 'comment',
+                    'created_at', 'updated_at')
+    list_filter = ('name', 'surname')

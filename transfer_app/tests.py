@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
 
-from transfer_app.models import Payment
+from transfer_app.models import PaymentModel
 from users.models import User
 
 
@@ -24,7 +24,7 @@ def test_create_payment_api():
     assert response.data['amount'] == 100.00
     assert response.data['currency'] == "RUB"
     assert response.data['description'] == "Тестовый перевод"
-    assert Payment.objects.count() == 1
+    assert PaymentModel.objects.count() == 1
 
 
 @pytest.mark.django_db
@@ -32,7 +32,7 @@ def test_list_payment_api():
     """Проверяет получение списка всех переводов через API."""
     sender = User.objects.create(username='sender')
     recipient = User.objects.create(username='recipient')
-    Payment.objects.create(
+    PaymentModel.objects.create(
         sender=sender,
         recipient=recipient,
         amount=100.00,
@@ -50,7 +50,7 @@ def test_retrieve_payment_api():
     """Проверяет получение информации о конкретном переводе через API."""
     sender = User.objects.create(username='sender')
     recipient = User.objects.create(username='recipient')
-    payment = Payment.objects.create(
+    payment = PaymentModel.objects.create(
         sender=sender,
         recipient=recipient,
         amount=100.00,
@@ -69,7 +69,7 @@ def test_update_payment_api():
     """Проверяет обновление информации о переводе через API."""
     sender = User.objects.create(username='sender')
     recipient = User.objects.create(username='recipient')
-    payment = Payment.objects.create(
+    payment = PaymentModel.objects.create(
         sender=sender,
         recipient=recipient,
         amount=100.00,
@@ -92,7 +92,7 @@ def test_delete_payment_api():
     """Проверяет удаление перевода через API."""
     sender = User.objects.create(username='sender')
     recipient = User.objects.create(username='recipient')
-    payment = Payment.objects.create(
+    payment = PaymentModel.objects.create(
         sender=sender,
         recipient=recipient,
         amount=100.00,
@@ -102,4 +102,4 @@ def test_delete_payment_api():
     client = APIClient()
     response = client.delete(reverse('payment-detail', args=[payment.pk]))
     assert response.status_code == 204
-    assert Payment.objects.count() == 0
+    assert PaymentModel.objects.count() == 0
