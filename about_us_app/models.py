@@ -11,7 +11,7 @@ CHOISE = {
     "2": "Отчетность",
     "3": "Уставные документы",
 }
-
+NULLABLE = {"blank": True, "null": True}
 
 class Abstract(models.Model):
     time_create = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
@@ -41,6 +41,12 @@ class TeamMember(Abstract):
         verbose_name="Фамилия",
         help_text="Только буквы не более 50 символов",
     )
+    surname = models.CharField(
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
+        max_length=50, 
+        verbose_name='Отчество',
+        **NULLABLE,
+        )
     role = models.CharField(
         max_length=100,
         verbose_name="Роль в проекте",
