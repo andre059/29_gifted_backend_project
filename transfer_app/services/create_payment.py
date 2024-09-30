@@ -4,8 +4,8 @@ from yookassa import Configuration, Payment
 
 from ..models import BalanceChange
 
-Configuration.account_id = os.getenv('ACCOUNT_ID')
-Configuration.secret_key = os.getenv('SHOP_SECRET_KEY')
+Configuration.account_id = os.getenv('GIFTED_29_ACCOUNT_ID')
+Configuration.secret_key = os.getenv('GIFTED_29_SHOP_SECRET_KEY')
 
 
 def create_payment(serialized_data):
