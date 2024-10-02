@@ -28,14 +28,14 @@ class Feedback(models.Model):
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
         max_length=100,  # думаю, имя не должно быть длиннее
         verbose_name="Имя",
-        help_text="Только буквы не более 50 символов",
+        help_text="Только буквы не более 100 символов",
     )
     lastname = models.CharField(
         # валидатор только слово из букв, исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
         max_length=100,  # думаю, фамилия не должна быть длиннее
         verbose_name="Фамилия",
-        help_text="Только буквы не более 50 символов",
+        help_text="Только буквы не более 100 символов",
     )
 
     preview = models.ImageField(
@@ -48,7 +48,8 @@ class Feedback(models.Model):
         blank=True,
         db_index=True,
         verbose_name="Содержимое",
-        help_text="Текст без ограничений",
+        help_text="Текст, не более 1000 символов",
+        max_length=1000,
     )
 
     @property

@@ -5,10 +5,20 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from .utils import docs_path
 
+GENDER = {
+    "male": "Мужской",
+    "female": "Женский",
+}
 
 class Abstract(models.Model):
-    time_create = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
-    time_update = models.DateTimeField(verbose_name="Изменено", auto_now=True)
+    time_create = models.DateTimeField(
+        verbose_name="Создано", 
+        auto_now_add=True,
+        )
+    time_update = models.DateTimeField(
+        verbose_name="Изменено", 
+        auto_now=True,
+        )
     is_published = models.BooleanField(
         verbose_name="Актуально на сайте",
         default=True,
@@ -25,18 +35,26 @@ class Friend(Abstract):
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я-]+$")],
         max_length=100,
         verbose_name="Имя",
-        help_text="Только буквы и '-' не более 50 символов",
+        help_text="Только буквы и '-' не более 100 символов",
     )
     last_name = models.CharField(
         # валидатор только слово из букв и "-", исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я-]+$")],
         max_length=100,
         verbose_name="Фамилия",
-        help_text="Только буквы и '-' не более 50 символов",
+        help_text="Только буквы и '-' не более 100 символов",
+    )
+    gender = models.CharField(
+        max_length=10,
+        choices=GENDER,
+        verbose_name="Пол",
+        help_text="Выберите пол",
+        default="male",
     )
     description = models.TextField(
         verbose_name="Роль в проекте",
-        help_text="Текст без ограничений",
+        help_text="Текст, не более 300 символов",
+        max_length=300,
     )
     link = models.ImageField(
         upload_to=docs_path,
@@ -59,7 +77,7 @@ class Company(Abstract):
         # валидация не нужна, в имени компании могут быть и цифры и другие знаки
         verbose_name="Название",
         max_length=300,
-        help_text="Текст не более 100 символов",
+        help_text="Текст не более 300 символов",
     )
     link = models.ImageField(
         upload_to=docs_path,
@@ -70,7 +88,8 @@ class Company(Abstract):
     )
     description = models.TextField(
         verbose_name="Чем была полезна:",
-        help_text="Текст без ограничений",
+        help_text="Текст, не более 300 символов",
+        max_length=300,
     )
 
     class Meta:
@@ -109,18 +128,19 @@ class Volunteer(models.Model):
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я-]+$")],
         max_length=100,
         verbose_name="Имя",
-        help_text="Только буквы и '-' не более 50 символов",
+        help_text="Только буквы и '-' не более 100 символов",
     )
     last_name = models.CharField(
         # валидатор только слово из букв и "-", исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я-]+$")],
         max_length=100,
         verbose_name="Фамилия",
-        help_text="Только буквы и '-' не более 50 символов",
+        help_text="Только буквы и '-' не более 100 символов",
     )
     email = models.EmailField(
         verbose_name="email",
         help_text="Введите email: example@mail.com",
+        max_length=254,
     )
     is_accept = models.BooleanField(
         verbose_name="Принято пользовательское соглашение",

@@ -6,4 +6,11 @@ class FeedbackSerializer(serializers.ModelSerializer):
     """Сериализатор для отзыввов"""
     class Meta:
         model = Feedback
-        fields = ('name', 'lastname', 'date_create', 'content', 'preview')
+        fields = (
+            'id',
+            'name', 
+            'lastname', 
+            'date_create', 
+            'content', 
+            'preview',
+            )

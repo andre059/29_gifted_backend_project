@@ -14,13 +14,40 @@ def docs_path(instance, filename: str) -> str:
 
 
 class ContactPage(models.Model):
-    header = models.CharField(max_length=200, verbose_name='Заголовок')
-    photo = models.ImageField(upload_to=docs_path, verbose_name='Фото')
-    short_description = models.TextField(verbose_name='Краткое описание')
-    address = models.CharField(max_length=255, verbose_name='Адрес')
-    phones = models.CharField(max_length=255, verbose_name='Телефоны')
-    email = models.EmailField(verbose_name='Электронная почта')
-    for_media = models.CharField(max_length=255, verbose_name='Для СМИ')
+    header = models.CharField(
+        max_length=200, 
+        verbose_name='Заголовок',
+        help_text="Текст, не более 200 символов",
+        )
+    photo = models.ImageField(
+        upload_to=docs_path,
+        verbose_name='Фото',
+        )
+    short_description = models.TextField(
+        verbose_name='Краткое описание',
+        max_length=1000, 
+        help_text="Текст, не более 1000 символов",
+        )
+    address = models.CharField(
+        max_length=255, 
+        verbose_name='Адрес',
+        help_text="Текст, не более 255 символов",
+        )
+    phones = models.CharField(
+        max_length=255, 
+        verbose_name='Телефоны',
+        help_text="Текст, не более 255 символов",
+        )
+    email = models.EmailField(
+        verbose_name='Электронная почта',
+        max_length=200,
+        help_text="Укажите электронную почту",
+        )
+    for_media = models.CharField(
+        max_length=255, 
+        verbose_name='Для СМИ',
+        help_text="Текст, не более 255 символов",
+        )
 
     def __str__(self):
         return self.header
