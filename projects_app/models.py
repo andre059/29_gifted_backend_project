@@ -22,8 +22,15 @@ class Project(models.Model):
     name = models.CharField(
         max_length=300,  # думаю, имя не должно быть длиннее
         verbose_name="Наименование проекта",
-        help_text="Только буквы не более 50 символов")
-    content = models.TextField(null=False, blank=True, db_index=True, verbose_name='содержимое')
+        help_text="Только буквы не более 300 символов")
+    content = models.TextField(
+        null=False, 
+        blank=True, 
+        db_index=True, 
+        verbose_name="содержимое",
+        max_length=1000,
+        help_text="Только буквы не более 1000 символов",
+        )
 
 
     @property
@@ -42,8 +49,16 @@ class Project(models.Model):
         verbose_name_plural = 'Проекты'
 
 class ProjectImage(models.Model):
-    project = models.ForeignKey(Project, related_name='images', on_delete=models.CASCADE, verbose_name="Проект")
-    image = models.ImageField(upload_to=docs_path, verbose_name="Изображение")
+    project = models.ForeignKey(
+        Project, 
+        related_name='images', 
+        on_delete=models.CASCADE, 
+        verbose_name="Проект",
+        )
+    image = models.ImageField(
+        upload_to=docs_path, 
+        verbose_name="Изображение",
+        )
 
     class Meta:
         verbose_name = "Изображение"
