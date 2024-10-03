@@ -6,7 +6,7 @@ from .models import Friend, Company, Volunteer
 class FriendAdmin(admin.ModelAdmin):
     list_display = ("name", "last_name", "link", "description", "is_published")
     search_fields = ("name", "last_name", "is_published")
-    fields = ("name", "last_name", "link", "description", "is_published")
+    fields = ("name", "last_name", "link", "description", "is_published", "gender")
 
 
 @admin.register(Company)
