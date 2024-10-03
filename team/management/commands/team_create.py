@@ -1,5 +1,5 @@
 from django.core.management import BaseCommand
-from models import Developer  
+from team.models import Developer  
 from django.core.files import File
 import os
 
@@ -14,7 +14,7 @@ class Command(BaseCommand):
             'Backend Team Lead', 
             'Frontend Team Lead', 
             'Project Manager', 
-            'Tester',
+            'Software Test Engineer',
             ]
 
         
