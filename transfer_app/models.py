@@ -49,8 +49,8 @@ class PaymentModel(models.Model):
         return f"Перевод {self.transfer_amount} от {self.name} {self.surname}"
 
     class Meta:
-        verbose_name = "Перевод"
-        verbose_name_plural = "Переводы"
+        verbose_name = "Разовый перевод"
+        verbose_name_plural = "Разовые переводы"
 
     @is_amount_positive
     def deposit(amount: Decimal) -> Payment:
@@ -115,3 +115,32 @@ class BalanceChange(models.Model):
 
     class Meta:
         ordering = ['-date_time_creation']
+
+
+class RecurringPayment(models.Model):
+    """Модель для регулярных платежей"""
+
+    payment = models.ForeignKey(
+        PaymentModel, on_delete=models.PROTECT, related_name='recurring_payments', verbose_name="Платеж"
+    )
+
+    amount = models.DecimalField(
+        max_digits=settings.MAX_BALANCE_DIGITS,
+        validators=[MinValueValidator(0, message='Should be positive value')],
+        decimal_places=2,
+        verbose_name="Сумма"
+    )
+    frequency = models.CharField(max_length=20, choices=(
+        ('monthly', 'Ежемесячно'),
+        ('quarterly', 'Ежеквартально'),
+        ('yearly', 'Ежегодно'),
+    ), default='monthly', verbose_name="Периодичность")
+    next_payment_date = models.DateTimeField(verbose_name="Дата следующего платежа")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+
+    def __str__(self):
+        return f"Автоплатеж {self.amount} {self.frequency} для {self.payment}"
+
+    class Meta:
+        verbose_name = "Авто перевод"
+        verbose_name_plural = "Авто переводы"
