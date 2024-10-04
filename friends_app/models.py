@@ -44,6 +44,14 @@ class Friend(Abstract):
         verbose_name="Фамилия",
         help_text="Только буквы и '-' не более 100 символов",
     )
+    sur_name = models.CharField(
+        # валидатор только слово из букв и "-", исключая остальные символы
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я-]+$")],
+        max_length=100,
+        verbose_name="Отчество",
+        help_text="Только буквы и '-' не более 100 символов",
+        null=True,
+    )
     gender = models.CharField(
         max_length=10,
         choices=GENDER,
