@@ -184,13 +184,14 @@ MAX_BALANCE_DIGITS = 11
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_TASK_TRACK_STARTED = True
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Moscow'
 CELERY_BEAT_SCHEDULE = {
     'process_recurring_payments': {
-        'task': 'transfer_app.services.process_recurring_payments',
+        'task': 'transfer_app.tasks.process_recurring_payments',
         'schedule': 10.0,
     },
 }

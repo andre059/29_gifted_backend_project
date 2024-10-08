@@ -76,3 +76,5 @@ rollbar~=1.0.0
 transaction~=5.0
 celery~=5.4.0
 django-celery-beat~=2.7.0
+eventlet~=0.37.0
+redis~=5.0.8
