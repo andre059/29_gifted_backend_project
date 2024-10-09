@@ -195,3 +195,6 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': 10.0,
     },
 }
+
+ACCOUNT_ID = os.getenv('GIFTED_29_ACCOUNT_ID')
+SHOP_SECRET_KEY = os.getenv('GIFTED_29_SHOP_SECRET_KEY')
