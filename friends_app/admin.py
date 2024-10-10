@@ -19,5 +19,5 @@ class CompanyAdmin(admin.ModelAdmin):
 
 @admin.register(Volunteer)
 class VolunteerAdmin(admin.ModelAdmin):
-    list_display = ("name", "last_name", "email", "is_accept")
+    list_display = ("name", "last_name", "email", "link", "is_accept")
     search_fields = ("name",)

@@ -10,15 +10,16 @@ GENDER = {
     "female": "Женский",
 }
 
+
 class Abstract(models.Model):
     time_create = models.DateTimeField(
-        verbose_name="Создано", 
+        verbose_name="Создано",
         auto_now_add=True,
-        )
+    )
     time_update = models.DateTimeField(
-        verbose_name="Изменено", 
+        verbose_name="Изменено",
         auto_now=True,
-        )
+    )
     is_published = models.BooleanField(
         verbose_name="Актуально на сайте",
         default=True,
@@ -108,28 +109,6 @@ class Company(Abstract):
         return f"{self.name}"
 
 
-@receiver(post_delete, sender=Friend)
-@receiver(post_delete, sender=Company)
-def delete_mediafile_on_delete(sender, instance, **kwargs):
-    """
-    Удаляет медиафайл из папки при удалении записи в БД
-    """
-    if instance.link:
-        # Получаем путь ссылки
-        link_path = instance.link.path
-        # Проверяем, существует ли файл по указанному пути
-        if os.path.isfile(link_path):
-            try:
-                os.remove(link_path)
-                return f"Файл {link_path} успешно удален"
-            except Exception as e:
-                return f"Ошибка при удалении файла {link_path}: {e}"
-        else:
-            return f"Файл {link_path} не найден"
-    
-
-
-
 class Volunteer(models.Model):
     name = models.CharField(
         # валидатор только слово из букв и "-", исключая остальные символы
@@ -150,13 +129,42 @@ class Volunteer(models.Model):
         help_text="Введите email: example@mail.com",
         max_length=254,
     )
+    link = models.ImageField(
+        upload_to=docs_path,
+        blank=True,
+        null=True,
+        verbose_name="Фото",
+        help_text="Добавьте фото (необязательно)",
+    )
     is_accept = models.BooleanField(
         verbose_name="Принято пользовательское соглашение",
         default=True,
     )
+
     class Meta:
         verbose_name = "Волонтер"
         verbose_name_plural = "Волонтеры"
 
     def __str__(self):
         return f"{self.name}"
+
+
+@receiver(post_delete, sender=Friend)
+@receiver(post_delete, sender=Company)
+@receiver(post_delete, sender=Volunteer)
+def delete_mediafile_on_delete(sender, instance, **kwargs):
+    """
+    Удаляет медиафайл из папки при удалении записи в БД
+    """
+    if instance.link:
+        # Получаем путь ссылки
+        link_path = instance.link.path
+        # Проверяем, существует ли файл по указанному пути
+        if os.path.isfile(link_path):
+            try:
+                os.remove(link_path)
+                return f"Файл {link_path} успешно удален"
+            except Exception as e:
+                return f"Ошибка при удалении файла {link_path}: {e}"
+        else:
+            return f"Файл {link_path} не найден"
