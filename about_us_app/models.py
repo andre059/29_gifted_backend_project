@@ -11,7 +11,7 @@ CHOISE = {
     "2": "Отчетность",
     "3": "Уставные документы",
 }
-
+NULLABLE = {"blank": True, "null": True}
 
 class Abstract(models.Model):
     time_create = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
@@ -32,15 +32,21 @@ class TeamMember(Abstract):
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
         max_length=100, # думаю, имя не должно быть длиннее
         verbose_name="Имя",
-        help_text="Только буквы не более 50 символов",
+        help_text="Только буквы не более 100 символов",
     )
     last_name = models.CharField(
         # валидатор только слово из букв, исключая остальные символы
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
         max_length=100, # думаю, фамилия не должна быть длиннее
         verbose_name="Фамилия",
-        help_text="Только буквы не более 50 символов",
+        help_text="Только буквы не более 100 символов",
     )
+    surname = models.CharField(
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
+        max_length=100, 
+        verbose_name='Отчество',
+        **NULLABLE,
+        )
     role = models.CharField(
         max_length=100,
         verbose_name="Роль в проекте",
@@ -68,16 +74,22 @@ class Document(Abstract):
         # валидация не нужна, в имени документа все ж могут быть и цифры и другие знаки
         verbose_name="Название",
         max_length=300,
-        help_text="Текст не более 100 символов",
+        help_text="Текст не более 300 символов",
     )
-    category = models.CharField(verbose_name="Категория", null=False, choices=CHOISE)
+    category = models.CharField(
+        verbose_name="Категория", 
+        null=False, 
+        choices=CHOISE,
+        )
     link = models.FileField(
         verbose_name="Ссылка",
         upload_to=docs_path,
         help_text="Добавьте документ (обязательно)",
     )
     description = models.TextField(
-        verbose_name="Описание", help_text="Текст без ограничений"
+        verbose_name="Описание",
+         help_text="Текст, не более 1000 символов",
+         max_length=1000,
     )
 
     class Meta:
@@ -92,17 +104,17 @@ class OrganizationDetail(Abstract):
     name = models.CharField(
         verbose_name="Название",
         max_length=300,
-        help_text="Текст не более 100 символов (цифры запрещены)",
+        help_text="Текст не более 300 символов (цифры запрещены)",
     )
     legal_address = models.CharField(
         verbose_name="Юридический адрес",
         max_length=300,
-        help_text="Текст не более 200 символов",
+        help_text="Текст не более 300 символов",
     )
     address = models.CharField(
         verbose_name="Физический адрес",
         max_length=300,
-        help_text="Текст не более 200 символов",
+        help_text="Текст не более 300 символов",
     )
     # ОГРН ― это код из 13 цифр, разделенных на шесть групп. Пример: 1 21 55 73 93522 0
     ogrn_number = models.CharField(

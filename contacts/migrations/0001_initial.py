@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('header', models.CharField(max_length=200, verbose_name='Заголовок')),
-                ('photo', models.ImageField(upload_to=contacts.models.docs_path, verbose_name='Фото')),
+                ('photo', models.ImageField( verbose_name='Фото')),
                 ('short_description', models.TextField(verbose_name='Краткое описание')),
                 ('address', models.CharField(max_length=255, verbose_name='Адрес')),
                 ('phones', models.CharField(max_length=255, verbose_name='Телефоны')),

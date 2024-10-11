@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from .utils import docs_path
 from django.core.validators import RegexValidator
 
+NULLABLE = {"blank": True, "null": True}
 
 class Developer(models.Model):
     photo = models.ImageField(
@@ -21,6 +22,12 @@ class Developer(models.Model):
         validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
         max_length=50, 
         verbose_name='Фамилия')
+    surname = models.CharField(
+        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
+        max_length=50, 
+        verbose_name='Отчество',
+        **NULLABLE,
+        )
     role = models.CharField(
         max_length=100, 
         verbose_name='Роль в проекте',
