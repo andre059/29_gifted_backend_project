@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.core.validators import MaxLengthValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models, transaction as tr
+from phonenumber_field.modelfields import PhoneNumberField
 
 from django.conf import settings
 from yookassa import Payment
@@ -25,7 +26,11 @@ class PaymentModel(models.Model):
 
     name = models.CharField(max_length=50, verbose_name="Имя")
     surname = models.CharField(max_length=100, verbose_name="Фамилия")
-    telephone = models.CharField(max_length=20, verbose_name="Телефон")
+    telephone = PhoneNumberField(
+        blank=True, 
+        region='RU', 
+        verbose_name='Телефон',
+        )
     email = models.EmailField(verbose_name="Электронная почта")
     transfer_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма перевода")
     type_transfer = models.CharField(max_length=20, verbose_name="Тип перевода", choices=(
