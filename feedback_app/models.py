@@ -7,11 +7,6 @@ from django.dispatch import receiver
 NULLABLE = {"blank": True, "null": True}
 
 
-# def feedback_preview_path(filename: str) -> str:
-#     """Функция для создания кастомной папки сохранения изображений"""
-#     return f"preview/feedback/{filename}"
-
-
 def docs_path(instance, filename: str) -> str:
     """
     Создает путь для сохранения медиафайла в папке media в виде:
@@ -39,10 +34,14 @@ class Feedback(models.Model):
     )
 
     preview = models.ImageField(
-        upload_to=docs_path, verbose_name="Фотография", **NULLABLE,
+        upload_to=docs_path,
+        verbose_name="Фотография",
+        **NULLABLE,
     )
 
-    date_create = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True,**NULLABLE)
+    date_create = models.DateTimeField(
+        verbose_name="Дата создания", auto_now_add=True, **NULLABLE
+    )
     content = models.TextField(
         null=False,
         blank=True,
