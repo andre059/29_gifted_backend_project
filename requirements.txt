@@ -75,4 +75,11 @@ utils==1.0.2
 wcwidth==0.2.13
 wrapt==1.16.0
 wsproto==1.2.0
-yookassa==3.3.0
+environs~=11.0.0
+yookassa~=3.3.0
+rollbar~=1.0.0
+transaction~=5.0
+celery~=5.4.0
+django-celery-beat~=2.7.0
+eventlet~=0.37.0
+redis~=5.0.8

@@ -49,11 +49,12 @@ class PaymentModel(models.Model):
         return f"Перевод {self.transfer_amount} от {self.name} {self.surname}"
 
     class Meta:
-        verbose_name = "Перевод"
-        verbose_name_plural = "Переводы"
+        verbose_name = "Разовый перевод"
+        verbose_name_plural = "Разовые переводы"
 
+    @classmethod
     @is_amount_positive
-    def deposit(amount: Decimal) -> Payment:
+    def deposit(cls, amount: Decimal) -> Payment:
         """
         Use a classmethod instead of an instance method,
         to acquire the lock we need to tell the database
@@ -63,7 +64,7 @@ class PaymentModel(models.Model):
         """
 
         with tr.atomic():
-            payment = PaymentModel.objects.create(
+            payment = cls.objects.create(
                 transfer_amount=amount,
                 is_accepted=False,
                 payment_id=uuid.uuid4(),  # Генерируем уникальный ID платежа
@@ -74,44 +75,42 @@ class PaymentModel(models.Model):
                 type_transfer='using your phone',  # Добавьте тип перевода
                 comment="Комментарий",  # Добавьте комментарий
             )
-            transaction = BalanceChange.objects.create(
-                payment=payment,
-                amount=amount,
-                operation_type=BalanceChange.OperationType.DEPOSIT,
-            )
             payment.is_accepted = True
             payment.save()
-        return transaction
+        return payment
 
 
-class BalanceChange(models.Model):
-    class OperationType(models.TextChoices):
-        """Указание типа операции"""
+class TransactionType(models.TextChoices):
+    """Указание типа операции"""
 
-        WITHDRAW = ('WD', 'WITHDRAW')
-        DEPOSIT = ('DT', 'DEPOSIT')
+    WITHDRAW = ('WD', 'WITHDRAW')
+    DEPOSIT = ('DT', 'DEPOSIT')
 
-    payment = models.ForeignKey(PaymentModel, on_delete=models.PROTECT, related_name='transactions')
+
+class RecurringPayment(models.Model):
+    """Модель для регулярных платежей"""
+
+    payment = models.ForeignKey(
+        PaymentModel, on_delete=models.PROTECT, related_name='recurring_payments', verbose_name="Платеж"
+    )
+
     amount = models.DecimalField(
         max_digits=settings.MAX_BALANCE_DIGITS,
         validators=[MinValueValidator(0, message='Should be positive value')],
         decimal_places=2,
-        editable=False,
+        verbose_name="Сумма"
     )
-    date_time_creation = models.DateTimeField(
-        auto_now_add=True,
-        editable=False,
-        db_index=True,
-    )
-    is_accepted = models.BooleanField(default=False)
-    operation_type = models.CharField(max_length=20, choices=OperationType.choices)
+    frequency = models.CharField(max_length=20, choices=(
+        ('monthly', 'Ежемесячно'),
+        ('quarterly', 'Ежеквартально'),
+        ('yearly', 'Ежегодно'),
+    ), default='monthly', verbose_name="Периодичность")
+    next_payment_date = models.DateTimeField(verbose_name="Дата следующего платежа")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
 
-    def __str__(self) -> str:
-        return (
-            f'Payment id:  {self.payment} '
-            f'Date time of creation: {self.date_time_creation}'
-            f'Amount: {self.amount}'
-        )
+    def __str__(self):
+        return f"Автоплатеж {self.amount} {self.frequency} для {self.payment}"
 
     class Meta:
-        ordering = ['-date_time_creation']
+        verbose_name = "Авто перевод"
+        verbose_name_plural = "Авто переводы"
