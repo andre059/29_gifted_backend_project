@@ -20,16 +20,16 @@ def docs_path(instance, filename: str) -> str:
 
 class Project(models.Model):
     name = models.CharField(
-        max_length=300,  # думаю, имя не должно быть длиннее
+        max_length=300,
         verbose_name="Наименование проекта",
-        help_text="Только буквы не более 300 символов")
+        help_text="Текст, не более 300 символов")
     content = models.TextField(
         null=False, 
         blank=True, 
         db_index=True, 
-        verbose_name="содержимое",
+        verbose_name="Содержимое",
         max_length=1000,
-        help_text="Только буквы не более 1000 символов",
+        help_text="Текст, не более 1000 символов",
         )
 
 
