@@ -52,6 +52,7 @@ class Friend(Abstract):
         verbose_name="Отчество",
         help_text="Только буквы и '-' не более 100 символов",
         null=True,
+        blank=True,
     )
     gender = models.CharField(
         max_length=10,
@@ -62,8 +63,8 @@ class Friend(Abstract):
     )
     description = models.TextField(
         verbose_name="Роль в проекте",
-        help_text="Текст, не более 300 символов",
-        max_length=300,
+        help_text="Текст, не более 85 символов",
+        max_length=85,
     )
     link = models.ImageField(
         upload_to=docs_path,
@@ -97,8 +98,8 @@ class Company(Abstract):
     )
     description = models.TextField(
         verbose_name="Чем была полезна:",
-        help_text="Текст, не более 300 символов",
-        max_length=300,
+        help_text="Текст, не более 85 символов",
+        max_length=85,
     )
 
     class Meta:
