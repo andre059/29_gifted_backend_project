@@ -25,24 +25,24 @@ services:
     depends_on:
       - gifted_29_db
 
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    command: redis-server --appendonly yes
-
-  celery_worker:
-    build:
-      context: .
-    command: celery -A config worker -l info
-    depends_on:
-      - redis
-      - gifted_29_db
-
-  celery_beat:
-    build:
-      context: .
-    command: celery -A config beat -l info
-    depends_on:
-      - redis
-      - gifted_29_db
+#  redis:
+#    image: redis:latest
+#    ports:
+#      - "6379:6379"
+#    command: redis-server --appendonly yes
+#
+#  celery_worker:
+#    build:
+#      context: .
+#    command: celery -A config worker -l info
+#    depends_on:
+#      - redis
+#      - gifted_29_db
+#
+#  celery_beat:
+#    build:
+#      context: .
+#    command: celery -A config beat -l info
+#    depends_on:
+#      - redis
+#      - gifted_29_db
