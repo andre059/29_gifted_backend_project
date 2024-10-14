@@ -67,7 +67,7 @@ stack-data==0.6.3
 traitlets==5.14.3
 trio==0.26.2
 trio-websocket==0.11.1
-typing_extensions==4.12.2
+typing_extensions~=4.12.1
 tzdata==2024.1
 uritemplate==4.1.1
 urllib3==2.2.2
@@ -83,3 +83,4 @@ celery~=5.4.0
 django-celery-beat~=2.7.0
 eventlet~=0.37.0
 redis~=5.0.8
+yookassa~=3.3.0
