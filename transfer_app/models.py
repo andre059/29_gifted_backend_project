@@ -19,7 +19,7 @@ class PaymentModel(models.Model):
     email = models.EmailField(verbose_name="Электронная почта")
     transfer_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма перевода")
     payment_id = models.CharField(max_length=36, unique=True, default=uuid.uuid4, verbose_name="ID платежа")
-    transfer_type = models.CharField(max_length=15, choices=[
+    payment_frequency = models.CharField(max_length=15, choices=[
                                         ('one-time', 'Разово'),
                                         ('monthly', 'Ежемесячно')
                                     ])

@@ -32,7 +32,8 @@ class PaymentFormView(APIView):
             PaymentModel.objects.create(
                 payment_id=payment_id,
                 amount=data['transfer_amount'],
-                transfer_type=data['transfer_type'],
+                payment_frequency=data['payment_frequency'],
+                type_transfer=data['type_transfer'],
                 comment=data['comment']
             )
 
