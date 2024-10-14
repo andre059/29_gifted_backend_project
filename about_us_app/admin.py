@@ -8,7 +8,6 @@ class TeamMemberAdmin(admin.ModelAdmin):
     search_fields = ("name", "last_name", "role", "is_published")
 
 
-
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
     list_display = ("name", "category", "link", "description", "is_published")
