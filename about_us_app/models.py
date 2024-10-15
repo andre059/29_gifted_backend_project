@@ -1,9 +1,14 @@
 from django.db import models
-from django.core.validators import RegexValidator
-import os
-from django.db.models.signals import post_delete
-from django.dispatch import receiver
-from .utils import docs_path
+from config.utils import (
+    charfield_only_limit_digits,
+    charfield_specific_length_without_valid,
+    charfield_validator_letters_and_extra,
+    imagefield,
+    charfield_with_choices,
+    filefield,
+    textfield_specific_length,
+)
+
 
 # Виды документов
 CHOISE = {
@@ -11,7 +16,7 @@ CHOISE = {
     "2": "Отчетность",
     "3": "Уставные документы",
 }
-NULLABLE = {"blank": True, "null": True}
+
 
 class Abstract(models.Model):
     time_create = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
@@ -27,38 +32,13 @@ class Abstract(models.Model):
 
 
 class TeamMember(Abstract):
-    name = models.CharField(
-        # валидатор только слово из букв, исключая остальные символы
-        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
-        max_length=100, # думаю, имя не должно быть длиннее
-        verbose_name="Имя",
-        help_text="Только буквы не более 100 символов",
+    name = charfield_validator_letters_and_extra("Имя", 100, ("-",))
+    last_name = charfield_validator_letters_and_extra("Фамилия", 100, ("-",))
+    surname = charfield_validator_letters_and_extra(
+        "Отчество", 100, (" ",), nullable=True
     )
-    last_name = models.CharField(
-        # валидатор только слово из букв, исключая остальные символы
-        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
-        max_length=100, # думаю, фамилия не должна быть длиннее
-        verbose_name="Фамилия",
-        help_text="Только буквы не более 100 символов",
-    )
-    surname = models.CharField(
-        validators=[RegexValidator(regex=r"^[a-zA-Zа-яА-Я]+$")],
-        max_length=100, 
-        verbose_name='Отчество',
-        **NULLABLE,
-        )
-    role = models.CharField(
-        max_length=100,
-        verbose_name="Роль в проекте",
-        help_text="Текст не более 100 символов (цифры запрещены)",
-    )
-    link = models.ImageField(
-        upload_to=docs_path,
-        blank=True,
-        null=True,
-        verbose_name="Фотография",
-        help_text="Добавьте фото (необязательно)",
-    )
+    role = charfield_specific_length_without_valid("Роль в проекте", 100)
+    link = imagefield("Фото", nullable=True)
 
     class Meta:
         verbose_name = "Члена команды"
@@ -68,29 +48,11 @@ class TeamMember(Abstract):
         return f"{self.name} {self.last_name} - {self.role}"
 
 
-
 class Document(Abstract):
-    name = models.CharField(
-        # валидация не нужна, в имени документа все ж могут быть и цифры и другие знаки
-        verbose_name="Название",
-        max_length=300,
-        help_text="Текст не более 300 символов",
-    )
-    category = models.CharField(
-        verbose_name="Категория", 
-        null=False, 
-        choices=CHOISE,
-        )
-    link = models.FileField(
-        verbose_name="Ссылка",
-        upload_to=docs_path,
-        help_text="Добавьте документ (обязательно)",
-    )
-    description = models.TextField(
-        verbose_name="Описание",
-         help_text="Текст, не более 1000 символов",
-         max_length=1000,
-    )
+    name = charfield_specific_length_without_valid("Название", 255)
+    category = charfield_with_choices("Категория", CHOISE)
+    link = filefield("Документ")
+    description = textfield_specific_length("Описание", 1000)
 
     class Meta:
         verbose_name = "Документ"
@@ -101,79 +63,25 @@ class Document(Abstract):
 
 
 class OrganizationDetail(Abstract):
-    name = models.CharField(
-        verbose_name="Название",
-        max_length=300,
-        help_text="Текст не более 300 символов (цифры запрещены)",
-    )
-    legal_address = models.CharField(
-        verbose_name="Юридический адрес",
-        max_length=300,
-        help_text="Текст не более 300 символов",
-    )
-    address = models.CharField(
-        verbose_name="Физический адрес",
-        max_length=300,
-        help_text="Текст не более 300 символов",
-    )
-    # ОГРН ― это код из 13 цифр, разделенных на шесть групп. Пример: 1 21 55 73 93522 0
-    ogrn_number = models.CharField(
-        # тут и ниже валидация только на определенное кол-во цифр
-        validators=[RegexValidator(regex=r"\d{13}")],
-        verbose_name="ОГРН",
-        max_length=13,
-        help_text="Состоит из 13 цифр",
-    )
-    # Всего у ИНН юридических лиц десять цифр
-    inn_number = models.CharField(
-        validators=[RegexValidator(regex=r"\d{10}")],
-        verbose_name="ИНН",
-        max_length=10,
-        help_text="Состоит из 10 цифр",
-    )
-    # КПП состоит из 9 знаков
-    kpp_number = models.CharField(
-        validators=[RegexValidator(regex=r"\d{9}")],
-        verbose_name="КПП",
-        max_length=9,
-        help_text="Состоит из 9 цифр",
-    )
-    # номер банковского расчётного счёта представляет собой двадцатизначное число
-    current_account = models.CharField(
-        validators=[RegexValidator(regex=r"\d{20}")],
-        verbose_name="Расчетный счет",
-        max_length=20,
-        help_text="Состоит из 20 цифр",
-    )
+    name = charfield_specific_length_without_valid("Название", 255)
+    legal_address = charfield_specific_length_without_valid("Юридический адрес", 255)
+    address = charfield_specific_length_without_valid("Физический адрес", 255)
 
+    # ОГРН ― это код из 13 цифр, разделенных на шесть групп. Пример: 1 21 55 73 93522 0
+    ogrn_number = charfield_only_limit_digits("ОГРН", 13)
+    # Всего у ИНН юридических лиц десять цифр
+    inn_number = charfield_only_limit_digits("ИНН", 10)
+    # КПП состоит из 9 знаков
+    kpp_number = charfield_only_limit_digits("КПП", 9)
+    # номер банковского расчётного счёта представляет собой двадцатизначное число
+    current_account = charfield_only_limit_digits("Расчетный счет", 20)
     # БИК — это девятизначный уникальный номер, который есть у каждого банковского отделения на территории России.
-    bik = models.CharField(
-        validators=[RegexValidator(regex=r"\d{9}")],
-        verbose_name="БИК",
-        max_length=9,
-        help_text="Состоит из 9 цифр",
-    )
+    bik = charfield_only_limit_digits("БИК", 9)
     # В России номера корреспондентских счетов состоят из 20 десятичных разрядов
-    correspondent_account = models.CharField(
-        validators=[RegexValidator(regex=r"\d{20}")],
-        verbose_name="Корр. счет",
-        max_length=20,
-        help_text="Состоит из 20 цифр",
-    )
-    director = models.CharField(
-        max_length=200, 
-        verbose_name="ФИО директора",
-        help_text="Только буквы не более 50 символов",
-        default="Иванов Иван Иванович"
-        
-    )
-    
-    link = models.ImageField(
-        verbose_name="QR-код банка",
-        upload_to=docs_path,
-        blank=True,
-        help_text="Отправляет на страницу, откуда можно сделать пожертвование на нужды организации (необязательно)",
-    )
+    correspondent_account = charfield_only_limit_digits("Корр. счет", 20)
+
+    director = charfield_validator_letters_and_extra("ФИО директора", 255, ("-", " "))
+    link = imagefield("QR-код банка", nullable=True)
 
     class Meta:
         verbose_name = "Реквизиты организации"
@@ -181,24 +89,3 @@ class OrganizationDetail(Abstract):
 
     def __str__(self):
         return f"{self.name}"
-
-
-@receiver(post_delete, sender=TeamMember)
-@receiver(post_delete, sender=Document)
-@receiver(post_delete, sender=OrganizationDetail)
-def delete_mediafile_on_delete(sender, instance, **kwargs):
-    """
-    Удаляет медиафайл из папки при удалении записи в БД
-    """
-    if instance.link:
-        # Получаем путь ссылки
-        link_path = instance.link.path
-        # Проверяем, существует ли файл по указанному пути
-        if os.path.isfile(link_path):
-            try:
-                os.remove(link_path)
-                return f"Файл {link_path} успешно удален"
-            except Exception as e:
-                return f"Ошибка при удалении файла {link_path}: {e}"
-        else:
-            return f"Файл {link_path} не найден"
