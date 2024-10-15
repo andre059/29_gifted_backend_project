@@ -12,7 +12,8 @@ class PaymentSerializer(serializers.ModelSerializer):
 class PaymentFormSerializer(serializers.Serializer):
     class Meta:
         model = PaymentModel
-        fields = ['name', 'surname', 'telephone', 'email', 'transfer_amount', 'transfer_type', 'comment']
+        fields = ['name', 'surname', 'telephone', 'email', 'transfer_amount', 'payment_frequency', 'type_transfer',
+                  'comment']
 
 # class CreatePaymentSerializer(serializers.ModelSerializer):
 #     class Meta:
