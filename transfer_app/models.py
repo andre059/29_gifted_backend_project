@@ -1,47 +1,100 @@
 import uuid
-from decimal import Decimal
 
-from django.core.validators import MaxLengthValidator, MinValueValidator
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils.translation import gettext_lazy as _
-from django.db import models, transaction as tr
+from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
-from django.conf import settings
-from yookassa import Payment
-
-
-NULLABLE = {"blank": True, "null": True}
+from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, \
+    validate_number_of_spaces_or_dashes, validate_email, validate_comment
 
 
 class PaymentModel(models.Model):
-    name = models.CharField(max_length=50, verbose_name="Имя")
-    surname = models.CharField(max_length=100, verbose_name="Фамилия")
+    name = models.CharField(
+        max_length=64,
+        validators=[
+            MinLengthValidator(1, _("Имя должно быть не менее 1 символа")),
+            MaxLengthValidator(64, _("Имя должно быть не более 64 символов")),
+            validate_name_or_surname,
+            validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes,
+        ],
+        verbose_name="Имя",
+    )
+    surname = models.CharField(
+        max_length=100,
+        validators=[
+            MinLengthValidator(1, _("Фамилия должна быть не менее 1 символа")),
+            MaxLengthValidator(64, _("Фамилия должна быть не более 64 символов")),
+            validate_name_or_surname,
+            validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes
+        ],
+        verbose_name="Фамилия"
+    )
     telephone = PhoneNumberField(
-        blank=True, 
-        region='RU', 
+        blank=True,
+        region='RU',
         verbose_name='Телефон',
-        )
-    email = models.EmailField(verbose_name="Электронная почта")
-    transfer_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма перевода")
-    payment_id = models.CharField(max_length=36, unique=True, default=uuid.uuid4, verbose_name="ID платежа")
-    payment_frequency = models.CharField(max_length=15, choices=[
-                                        ('one-time', 'Разово'),
-                                        ('monthly', 'Ежемесячно')
-                                    ])
-    type_transfer = models.CharField(max_length=50, verbose_name="Тип перевода",
-                                     choices=(
-                                         ('using your phone', 'С помощью телефона'),
-                                         ('by map', 'По карте'),
-                                         ('using QR code', 'Через QR код')
-                                     ),
-                                     default='using your phone'
-                                     )
-    comment = models.TextField(blank=True)
-    status = models.CharField(max_length=20, default='pending')
-    is_accepted = models.BooleanField(default=False)
-
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время создания")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата и время обновления")
+    )
+    email = models.EmailField(
+        validators=[
+            MaxLengthValidator(254, _("Email не может быть длиннее 254 символов")),
+            validate_email,
+        ],
+        verbose_name="Электронная почта")
+    transfer_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Сумма перевода",
+    )
+    payment_id = models.CharField(
+        max_length=36, unique=True,
+        default=uuid.uuid4,
+        verbose_name="ID платежа",
+    )
+    payment_frequency = models.CharField(
+        max_length=15,
+        choices=[
+                ('one-time', 'Разово'),
+                ('monthly', 'Ежемесячно')
+            ],
+    )
+    type_transfer = models.CharField(
+        max_length=50,
+        verbose_name="Тип перевода",
+        choices=(
+                ('using your phone', 'С помощью телефона'),
+                ('by map', 'По карте'),
+                ('using QR code', 'Через QR код')
+        ),
+        default='using your phone',
+    )
+    comment = models.TextField(
+        blank=True,
+        verbose_name="Комментарий",
+        validators=[
+            MaxLengthValidator(200, _("Комментарий не может быть длиннее 200 символов.")),
+            validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes,
+            validate_comment,
+        ]
+    )
+    status = models.CharField(
+        max_length=20,
+        default='pending',
+    )
+    is_accepted = models.BooleanField(
+        default=False,
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата и время создания",
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="Дата и время обновления",
+    )
 
     def __str__(self):
         return f"Перевод {self.transfer_amount} от {self.name} {self.surname}"
@@ -49,112 +102,3 @@ class PaymentModel(models.Model):
     class Meta:
         verbose_name = _("Платеж")
         verbose_name_plural = _("Платежи")
-
-# def is_amount_positive(method):
-#     """Проверяет положительность суммы"""
-#
-#     def wrapper(cls, args, kwargs):
-#         amount = kwargs['amount']
-#         if amount < 0:
-#             raise ValueError('Should be positive value')
-#         return method(cls, args, kwargs)
-#
-#     return wrapper
-#
-#
-# class PaymentModel(models.Model):
-#     """Модель для разовых денежных переводов"""
-#
-#     name = models.CharField(max_length=50, verbose_name="Имя")
-#     surname = models.CharField(max_length=100, verbose_name="Фамилия")
-#     telephone = models.CharField(max_length=20, verbose_name="Телефон")
-#     email = models.EmailField(verbose_name="Электронная почта")
-#     transfer_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма перевода")
-#     type_transfer = models.CharField(max_length=50, verbose_name="Тип перевода",
-#                                      choices=(
-#                                          ('using your phone', 'С помощью телефона'),
-#                                          ('by map', 'По карте'),
-#                                          ('using QR code', 'Через QR код')
-#                                      ),
-#                                      default='using your phone'
-#                                      )
-#     comment = models.TextField(
-#         **NULLABLE, verbose_name="Комментарий",
-#         validators=[MaxLengthValidator(255, _("Комментарий не может быть длиннее 255 символов."))])
-#
-#     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время создания")
-#     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата и время обновления")
-#
-#     payment_id = models.CharField(max_length=255, unique=True, default=uuid.uuid4, editable=False,
-#                                   verbose_name="ID платежа")
-#     is_accepted = models.BooleanField(default=False)  # Перевод принят
-#
-#     def __str__(self):
-#         return f"Перевод {self.transfer_amount} от {self.name} {self.surname}"
-#
-#     class Meta:
-#         verbose_name = "Разовый перевод"
-#         verbose_name_plural = "Разовые переводы"
-#
-#     @classmethod
-#     @is_amount_positive
-#     def deposit(cls, amount: Decimal) -> Payment:
-#         """
-#         Use a classmethod instead of an instance method,
-#         to acquire the lock we need to tell the database
-#         to lock it, preventing data update collisions.
-#         When operating on self the object is already fetched.
-#         And we don't have  any guaranty that it was locked.
-#         """
-#
-#         with tr.atomic():
-#             payment = cls.objects.create(
-#                 transfer_amount=amount,
-#                 is_accepted=False,
-#                 payment_id=uuid.uuid4(),  # Генерируем уникальный ID платежа
-#                 name="Имя",  # Добавьте реальное имя
-#                 surname="Фамилия",  # Добавьте реальную фамилию
-#                 telephone="+71234567890",  # Добавьте реальный телефон
-#                 email="test@example.com",  # Добавьте реальный email
-#                 type_transfer='using your phone',  # Добавьте тип перевода
-#                 comment="Комментарий",  # Добавьте комментарий
-#             )
-#             payment.is_accepted = True
-#             payment.save()
-#         return payment
-#
-#
-# class TransactionType(models.TextChoices):
-#     """Указание типа операции"""
-#
-#     WITHDRAW = ('WD', 'WITHDRAW')
-#     DEPOSIT = ('DT', 'DEPOSIT')
-#
-#
-# class RecurringPayment(models.Model):
-#     """Модель для регулярных платежей"""
-#
-#     payment = models.ForeignKey(
-#         PaymentModel, on_delete=models.PROTECT, related_name='recurring_payments', verbose_name="Платеж"
-#     )
-#
-#     amount = models.DecimalField(
-#         max_digits=settings.MAX_BALANCE_DIGITS,
-#         validators=[MinValueValidator(0, message='Should be positive value')],
-#         decimal_places=2,
-#         verbose_name="Сумма"
-#     )
-#     frequency = models.CharField(max_length=20, choices=(
-#         ('monthly', 'Ежемесячно'),
-#         ('quarterly', 'Ежеквартально'),
-#         ('yearly', 'Ежегодно'),
-#     ), default='monthly', verbose_name="Периодичность")
-#     next_payment_date = models.DateTimeField(verbose_name="Дата следующего платежа")
-#     is_active = models.BooleanField(default=True, verbose_name="Активен")
-#
-#     def __str__(self):
-#         return f"Автоплатеж {self.amount} {self.frequency} для {self.payment}"
-#
-#     class Meta:
-#         verbose_name = "Авто перевод"
-#         verbose_name_plural = "Авто переводы"

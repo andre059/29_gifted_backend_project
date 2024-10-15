@@ -6,7 +6,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 
-from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, validate_phone, \
+from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, validate_email, \
     validate_number_of_spaces_or_dashes, validate_comment
 
 NULLABLE = {"blank": True, "null": True}
@@ -138,7 +138,6 @@ class Registration(models.Model):
         region='RU', 
         verbose_name='Телефон',
         )
-
 
     email = models.EmailField(
         validators=[

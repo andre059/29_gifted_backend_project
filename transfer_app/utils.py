@@ -10,4 +10,4 @@ def setup_yandex_config(account_id, secret_key):
 
 
 def generate_payment_id(amount):
-    return str(uuid.uuid4())[:8] + str(int(amount))
+    return str(uuid.uuid4())[:36] + str(int(amount))

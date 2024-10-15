@@ -1,20 +1,33 @@
 from rest_framework import serializers
 from .models import Event, EventPhoto, EventVideo, EventLinkVideo, Registration
 
+
 class EventPhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventPhoto
-        fields = ['id', 'link']
+        fields = [
+            'id',
+            'link'
+        ]
+
 
 class EventVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventVideo
-        fields = ['id', 'link']
+        fields = [
+            'id',
+            'link'
+        ]
+
 
 class EventLinkVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventLinkVideo
-        fields = ['id', 'link_video', 'date']
+        fields = [
+            'id',
+            'link_video',
+            'date'
+        ]
 
 
 class EventsSerializer(serializers.ModelSerializer):
