@@ -11,7 +11,7 @@ services:
     volumes:
       - ${GIFTED_29_DB_VOLUME}:/var/lib/postgresql/data
 
-  gifted_29_web:
+  gifted_29_django_app:
     build:
       context: .
     container_name: gifted_29_django_app
@@ -25,24 +25,24 @@ services:
     depends_on:
       - gifted_29_db
 
-#  redis:
-#    image: redis:latest
-#    ports:
-#      - "6379:6379"
-#    command: redis-server --appendonly yes
-#
-#  celery_worker:
-#    build:
-#      context: .
-#    command: celery -A config worker -l info
-#    depends_on:
-#      - redis
-#      - gifted_29_db
-#
-#  celery_beat:
-#    build:
-#      context: .
-#    command: celery -A config beat -l info
-#    depends_on:
-#      - redis
-#      - gifted_29_db
+  gifted_29_redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+
+  gifted_29_celery_worker:
+    build:
+      context: .
+    command: celery -A config worker -l info
+    depends_on:
+      - gifted_29_redis
+      - gifted_29_db
+
+  gifted_29_celery_beat:
+    build:
+      context: .
+    command: celery -A config beat -l info
+    depends_on:
+      - gifted_29_redis
+      - gifted_29_db

@@ -1,9 +1,7 @@
 from rest_framework import serializers
+from config.settings import MAX_UPLOAD_SIZE
 from feedback_app.models import Feedback
 from django.template.defaultfilters import filesizeformat
-
-# Разрешаем загрузку файла со стороны пользователя не более 5 Мб
-MAX_UPLOAD_SIZE = 5 * 1024 * 1024
 
 
 def check_file(self):

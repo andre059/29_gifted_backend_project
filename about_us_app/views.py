@@ -6,12 +6,11 @@ from .serializers import (
     TeamMemberSerializer,
     DocumentSerializer,
     OrganizationDetailSerializer,
-    CombinedSerializer
+    CombinedSerializer,
 )
 
 
 class TeamMemberViewSet(viewsets.ModelViewSet):
-    """ API view for team members """
     queryset = TeamMember.objects.all()
     serializer_class = TeamMemberSerializer
 
@@ -25,6 +24,7 @@ class OrganizationDetailViewSet(viewsets.ModelViewSet):
     queryset = OrganizationDetail.objects.all()
     serializer_class = OrganizationDetailSerializer
 
+
 class CombinedDataView(APIView):
     def get(self, request, *args, **kwargs):
         teams = TeamMember.objects.all()
@@ -32,11 +32,11 @@ class CombinedDataView(APIView):
         orgs = OrganizationDetail.objects.all()
 
         data = {
-            'team': TeamMemberSerializer(teams, many=True).data,
-            'doc': DocumentSerializer(docs, many=True).data,
-            'org': OrganizationDetailSerializer(orgs, many=True).data
+            "team": TeamMemberSerializer(teams, many=True).data,
+            "doc": DocumentSerializer(docs, many=True).data,
+            "org": OrganizationDetailSerializer(orgs, many=True).data,
         }
 
         serializer = CombinedSerializer(data=data)
-        serializer.is_valid()  # To run the validations if necessary
+        serializer.is_valid()
         return Response(serializer.data)
