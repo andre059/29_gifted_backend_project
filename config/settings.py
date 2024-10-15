@@ -200,3 +200,4 @@ ACCOUNT_ID = os.getenv('GIFTED_29_ACCOUNT_ID')
 SHOP_SECRET_KEY = os.getenv('GIFTED_29_SHOP_SECRET_KEY')
 # Разрешаем загрузку файла со стороны пользователя не более 1 Мб
 MAX_UPLOAD_SIZE = os.getenv('GIFTED_29_MAX_UPLOAD_SIZE') * 1024 * 1024
+SITE_URL = os.getenv('GIFTED_29_SITE_URL')

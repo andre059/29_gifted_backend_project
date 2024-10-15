@@ -16,7 +16,8 @@ class ContactPage(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk and ContactPage.objects.exists():
-            return super().save(*args, **kwargs)
+            return
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Контакты"
