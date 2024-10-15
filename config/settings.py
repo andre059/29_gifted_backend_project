@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'corsheaders',
-    'django_celery_beat',
+    # 'django_celery_beat',
 
     'users',
     'about_us_app',
