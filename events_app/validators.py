@@ -4,8 +4,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext as _
 
-# from events_app.models import Registration
-
 
 def validate_no_mixed_scripts(value):
     """Проверка, что в строке не используется одновременно кириллица и латиница."""
