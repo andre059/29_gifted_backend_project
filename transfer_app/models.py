@@ -49,7 +49,7 @@ class PaymentModel(models.Model):
         verbose_name="Сумма перевода",
     )
     payment_id = models.CharField(
-        max_length=36, unique=True,
+        max_length=100, unique=True,
         default=uuid.uuid4,
         verbose_name="ID платежа",
     )
@@ -64,11 +64,11 @@ class PaymentModel(models.Model):
         max_length=50,
         verbose_name="Тип перевода",
         choices=(
-                ('using your phone', 'С помощью телефона'),
-                ('by map', 'По карте'),
-                ('using QR code', 'Через QR код')
+                ('phone_number', 'С помощью телефона'),
+                ('bankcard', 'По карте'),
+                ('qr_code', 'Через QR код')
         ),
-        default='using your phone',
+        default='bankcard',
     )
     comment = models.TextField(
         blank=True,

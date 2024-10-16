@@ -11,7 +11,7 @@ class Feedback(models.Model):
     lastname = charfield_validator_letters_and_extra("Фамилия", 100, extra=("-",))
     link = imagefield("Фото", nullable=True)
     content = textfield_specific_length("Текст отзыва", 1000)
-    date_create = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True)
+    date_create = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True, null=True)
 
     @property
     def content_short(self) -> str:

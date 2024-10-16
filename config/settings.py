@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'corsheaders',
-    # 'django_celery_beat',
 
     'users',
     'about_us_app',
@@ -188,4 +187,3 @@ SITE_URL = os.getenv('GIFTED_29_SITE_URL')
 
 # Разрешаем загрузку файла со стороны пользователя не более 1 Мб
 MAX_UPLOAD_SIZE = os.getenv('GIFTED_29_MAX_UPLOAD_SIZE') * 1024 * 1024
-SITE_URL = os.getenv('GIFTED_29_SITE_URL')
