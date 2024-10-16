@@ -48,7 +48,7 @@ class Friend(Abstract):
 class Company(Abstract):
     name = charfield_specific_length_without_valid("Название", 255)
     link = imagefield("Логотип", nullable=True)
-    description = textfield_specific_length("Чем была полезна:", 85)
+    description = textfield_specific_length("Чем была полезна:", 70)
 
     class Meta:
         verbose_name = "Компания"

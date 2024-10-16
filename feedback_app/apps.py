@@ -2,6 +2,6 @@ from django.apps import AppConfig
 
 
 class FeedbackAppConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'feedback_app'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "feedback_app"
     verbose_name = "Приложение для отзывов"
