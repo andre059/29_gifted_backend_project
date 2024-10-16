@@ -4,11 +4,10 @@ from projects_app.apps import ProjectsAppConfig
 from projects_app.views import ProjectAPIView
 
 
-
 app_name = ProjectsAppConfig.name
 router = DefaultRouter()
-router.register(r'', ProjectAPIView)
+router.register(r"", ProjectAPIView)
 
 urlpatterns = [
-    path('', include(router.urls)),
-    ]
+    path("", include(router.urls)),
+]
