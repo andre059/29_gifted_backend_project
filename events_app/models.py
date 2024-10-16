@@ -25,7 +25,6 @@ def docs_path(instance, filename: str) -> str:
 class Event(models.Model):
 
     name_of_event = models.CharField(
-        # возможно, тут достаточно 200
         max_length=300,
         verbose_name="Название мероприятия",
         help_text="Текст не более 300 символов",
@@ -47,10 +46,18 @@ class Event(models.Model):
     )
 
     @property
+    def event_description(self):
+        return self._description_of_event
+
+    @event_description.setter
+    def event_description(self, value):
+        self._description_of_event = value
+
+    @property
     def content_short(self) -> str:
-        if len(self.description_of_event) < 40:
-            return self.description_of_event
-        return self.description_of_event[:40] + "..."
+        if len(self.event_description) < 40:
+            return self.event_description
+        return self.event_description[:40] + "..."
 
     def __str__(self):
         return self.name_of_event

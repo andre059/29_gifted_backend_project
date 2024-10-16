@@ -38,7 +38,8 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
     def register(self, request):
         return self.post(request)
 
-    def send_registration_email(self, registration):
+    @classmethod
+    def send_registration_email(cls, registration):
         """ Send registration email """
 
         subject = f"Регистрация на мероприятие: {registration.event.name_of_event}"
