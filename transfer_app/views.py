@@ -28,7 +28,7 @@ class PaymentFormView(APIView):
                 payment_id=payment_id,
                 name=data['name'],
                 surname=data['surname'],
-                telephone=data['telephone'],
+                phone=data['phone'],
                 email=data['email'],
                 transfer_amount=data['transfer_amount'],
                 payment_frequency=data['payment_frequency'],

@@ -32,7 +32,7 @@ class PaymentModel(models.Model):
         ],
         verbose_name="Фамилия"
     )
-    telephone = PhoneNumberField(
+    phone = PhoneNumberField(
         blank=True,
         region='RU',
         verbose_name='Телефон',
