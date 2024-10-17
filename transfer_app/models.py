@@ -49,7 +49,7 @@ class PaymentModel(models.Model):
         verbose_name="Сумма перевода",
     )
     payment_id = models.CharField(
-        max_length=36, unique=True,
+        max_length=45, unique=True,
         default=uuid.uuid4,
         verbose_name="ID платежа",
     )
