@@ -3,10 +3,14 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from config.settings import MAX_UPLOAD_SIZE
 from django.template.defaultfilters import filesizeformat
+
+from events_app.validators import validate_no_mixed_scripts, validate_name_or_surname, \
+    validate_number_of_spaces_or_dashes, validate_email, validate_comment
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -166,3 +170,102 @@ def delete_mediafile_on_delete(sender, instance, **kwargs):
                 return f"Ошибка при удалении файла {link_path}: {e}"
         else:
             return f"Файл {link_path} не найден"
+
+
+def charfield_address_specific_length_with_nullability(name: str, max_length: int) -> models.CharField:
+    """
+    Создает поле CharField определенной длины, с возможностью null и blank
+    """
+    return models.CharField(
+        verbose_name=name,
+        max_length=max_length,
+        help_text=f"Текст не более {max_length} символов",
+        **NULLABLE,
+    )
+
+
+def datetime_field_with_nullability(name: str) -> models.DateTimeField:
+    """
+    Создает поле DateTimeField с возможностью null и blank
+    """
+    return models.DateTimeField(
+        verbose_name=name,
+        **NULLABLE,
+    )
+
+
+def charfield_length_validation(name: str, max_length: int) -> models.CharField:
+    """
+    Создает поле CharField с дополнительными параметрами и валидаторами.
+    """
+    return models.CharField(
+        verbose_name=name,
+        max_length=max_length,
+        validators=[
+            MinLengthValidator(1, _("Имя должно быть не менее 1 символа")),
+            MaxLengthValidator(max_length, _("Имя должно быть не более 64 символов")),
+            validate_name_or_surname,
+            validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes,
+        ],
+    )
+
+
+def emailfield_validation(name: str) -> models.EmailField:
+    """
+    Создает поле EmailField с валидаторами
+    """
+    return models.EmailField(
+        verbose_name=name,
+        validators=[
+            MaxLengthValidator(254, _("Email не может быть длиннее 254 символов")),
+            validate_email,
+        ],
+    )
+
+
+def textfield_validation(name: str) -> models.TextField:
+    """
+    Создает поле TextField с дополнительными параметрами и валидаторами.
+    """
+    return models.TextField(
+        verbose_name=name,
+        blank=f"{True}",
+        validators=[
+            MaxLengthValidator(200, _("Комментарий не может быть длиннее 200 символов.")),
+            validate_no_mixed_scripts,
+            validate_number_of_spaces_or_dashes,
+            validate_comment,
+        ]
+    )
+
+
+def datetime_field_with(name: str) -> models.DateTimeField:
+    """
+    Создает поле DateTimeField
+    """
+    return models.DateTimeField(
+        verbose_name=name,
+        auto_now_add=True
+    )
+
+
+def boolean_field(name: str, default: bool = False) -> models.BooleanField:
+    """
+    Создает поле BooleanField
+    """
+    return models.BooleanField(
+        verbose_name=name,
+        default=False,
+    )
+
+
+def phone_number_field(name: str) -> PhoneNumberField:
+    """
+    Создает поле PhoneNumberField
+    """
+    return PhoneNumberField(
+        verbose_name=name,
+        region="RU",
+        blank=True,
+    )
