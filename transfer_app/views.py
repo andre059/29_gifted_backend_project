@@ -22,9 +22,10 @@ class PaymentFormView(APIView):
         serializer = PaymentFormSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
+            payment_id = generate_payment_id(float(data['transfer_amount']))
 
             PaymentModel.objects.create(
-                payment_id=generate_payment_id(float(data['transfer_amount'])),
+                payment_id=payment_id,
                 name=data['name'],
                 surname=data['surname'],
                 telephone=data['telephone'],
@@ -35,7 +36,7 @@ class PaymentFormView(APIView):
                 comment=data['comment']
             )
 
-            return Response({"message": "Платежная форма успешно отправлена"}, status=status.HTTP_200_OK)
+            return Response({"payment_id": payment_id, "type_transfer": data['type_transfer']}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
