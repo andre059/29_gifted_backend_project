@@ -1,7 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from about_us_app.apps import AboutUsAppConfig
-from .views import TeamMemberViewSet, DocumentViewSet, OrganizationDetailViewSet, CombinedDataView
+from .views import (
+    TeamMemberViewSet,
+    DocumentViewSet,
+    OrganizationDetailViewSet,
+    CombinedDataView,
+)
 
 app_name = AboutUsAppConfig.name
 router = DefaultRouter()
@@ -12,5 +17,5 @@ router.register(r"org", OrganizationDetailViewSet)
 
 urlpatterns = [
     path("separate/", include(router.urls)),
-    path('', CombinedDataView.as_view(), name='combined-data')
+    path("", CombinedDataView.as_view(), name="combined-data"),
 ]

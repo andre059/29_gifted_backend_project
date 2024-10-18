@@ -1,77 +1,56 @@
-import json
-
+from django.core.exceptions import ValidationError
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
-from yookassa import Payment
+from rest_framework.views import APIView
 
-from transfer_app.models import RecurringPayment
-from transfer_app.serializers import CreatePaymentSerializer, CreateRecurringPaymentSerializer
-from transfer_app.services.create_payment import create_payment
-from transfer_app.services.payment_acceptance import payment_acceptance
+from transfer_app.models import PaymentModel
+from transfer_app.serializers import PaymentFormSerializer
+from transfer_app.utils import create_payment, set_payment_status
+from rest_framework.request import Request
 
 
-class CreatePaymentView(CreateAPIView):
-    serializer_class = CreatePaymentSerializer
+class PaymentFormView(APIView):
 
-    def post(self, request, *args, **kwargs):
-        serializer = CreatePaymentSerializer(data=request.data)
+    serializer_class = PaymentFormSerializer
 
+    def post(self, request: Request):
+        serializer = PaymentFormSerializer(data=request.data)
         if serializer.is_valid():
-            serialized_data = serializer.validated_data
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        confirmation_url = create_payment(serialized_data)
-
-        return Response({'confirmation_url': confirmation_url}, 200)
-
-
-class CreatePaymentAcceptanceView(CreateAPIView):
-
-    def post(self, request, *args, **kwargs):
-        response = json.loads(request.body)
-
-        if payment_acceptance(response):
-            return Response(200)
-        return Response(404)
-
-
-class CreateRecurringPaymentView(CreateAPIView):
-    def post(self, request):
-        # Получите данные о платеже
-        serializer = CreateRecurringPaymentSerializer(data=request.data)
-        if serializer.is_valid():
-            serialized_data = serializer.validated_data
-            payment = Payment.objects.create(
-                transfer_amount=serialized_data['amount'],
-                name="Имя",
-                surname="Фамилия",
-                telephone="+71234567890",
-                email="test@example.com",
-                type_transfer='using your phone',
-                comment="Комментарий",
+            data = serializer.validated_data
+            payment = create_payment(data['transfer_amount'], data['comment'])
+            
+            PaymentModel.objects.create(
+                payment_id=payment.id,
+                name=data['name'],
+                surname=data['surname'],
+                phone=data['phone'],
+                email=data['email'],
+                transfer_amount=data['transfer_amount'],
+                comment=data['comment']
             )
-            recurring_payment = RecurringPayment.objects.create(
-                payment=payment,
-                amount=serialized_data['amount'],
-                frequency=serialized_data['frequency'],
-                next_payment_date=serialized_data['next_payment_date'],
-            )
-            return Response(status=status.HTTP_201_CREATED)
+
+            return Response({"payment_url": payment.confirmation.confirmation_url, "payment_id": payment.id}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CancelRecurringPaymentView(CreateAPIView):
-    """Отменить платеж"""
+class PaymentProcessingView(APIView):
 
-    def post(self, request, payment_id):
+    def post(self, request: Request):
         try:
-            recurring_payment = RecurringPayment.objects.get(payment__payment_id=payment_id)
-        except RecurringPayment.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            payment = set_payment_status(request)
+            return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        recurring_payment.is_active = False
-        recurring_payment.save()
 
-        return Response(status=status.HTTP_200_OK)
+class PaymentSuccessView(APIView):
+
+    def post(self, request: Request):
+        try:
+            payment = set_payment_status(request)
+            if payment.status == 'succeeded':
+                return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_200_OK)
+            else:
+                return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

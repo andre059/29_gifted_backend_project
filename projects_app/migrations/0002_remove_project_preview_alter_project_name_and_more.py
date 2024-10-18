@@ -2,7 +2,7 @@
 
 import django.core.validators
 import django.db.models.deletion
-import projects_app.models
+import config.utils
 from django.db import migrations, models
 
 
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             name='ProjectImage',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=projects_app.models.docs_path, verbose_name='Изображение')),
+                ('link', models.ImageField(upload_to=config.utils.docs_path, verbose_name='Изображение')),
                 ('news', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='projects_app.project', verbose_name='Проект')),
             ],
             options={
