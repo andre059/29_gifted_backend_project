@@ -49,26 +49,9 @@ class PaymentModel(models.Model):
         verbose_name="Сумма перевода",
     )
     payment_id = models.CharField(
-        max_length=45, unique=True,
+        max_length=100, unique=True,
         default=uuid.uuid4,
         verbose_name="ID платежа",
-    )
-    payment_frequency = models.CharField(
-        max_length=15,
-        choices=[
-                ('one-time', 'Разово'),
-                ('monthly', 'Ежемесячно')
-            ],
-    )
-    type_transfer = models.CharField(
-        max_length=50,
-        verbose_name="Тип перевода",
-        choices=(
-                ('using your phone', 'С помощью телефона'),
-                ('by map', 'По карте'),
-                ('using QR code', 'Через QR код')
-        ),
-        default='using your phone',
     )
     comment = models.TextField(
         blank=True,
