@@ -166,3 +166,24 @@ def delete_mediafile_on_delete(sender, instance, **kwargs):
                 return f"Ошибка при удалении файла {link_path}: {e}"
         else:
             return f"Файл {link_path} не найден"
+
+def urlfield(name: str, nullable=False) -> models.URLField:
+    """
+    Создает поле URLField
+    """
+    nullable = NULLABLE if nullable else {}
+    return models.URLField(
+        verbose_name=name,
+        **nullable,
+    )
+
+def datetimefield(name: str, auto_now_add=False, auto_now=False) -> models.DateTimeField:
+    """
+    Создает поле DateTimeField
+    """
+    return models.DateTimeField(
+        verbose_name=name,
+        auto_now_add=auto_now_add,
+        auto_now=auto_now
+    )
+
