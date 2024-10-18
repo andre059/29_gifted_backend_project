@@ -12,22 +12,20 @@ class PaymentSerializer(serializers.ModelSerializer):
 class PaymentFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentModel
-        fields = ['name', 'surname', 'telephone', 'email', 'transfer_amount', 'payment_frequency', 'type_transfer',
-                  'comment']
+        fields = ['name', 'surname', 'phone', 'email', 'transfer_amount', 'comment']
 
     def validate(self, data):
         # Проверка наличия всех обязательных полей
-        required_fields = ['name', 'surname', 'telephone', 'email', 'transfer_amount', 'payment_frequency',
-                           'type_transfer']
+        required_fields = ['name', 'surname', 'phone', 'email', 'transfer_amount', 'comment']
         for field in required_fields:
             if field not in data:
                 raise serializers.ValidationError(f"Обязательное поле '{field}' отсутствует.")
 
         # Валидация суммы перевода
-        transfer_amount_str = str(data['transfer_amount'])
-        transfer_amount = float(transfer_amount_str.replace(',', '.'))
-
+        transfer_amount = data['transfer_amount']
         if transfer_amount <= 0:
             raise serializers.ValidationError("Сумма должна быть положительной.")
+        if transfer_amount > 1000000:
+            raise serializers.ValidationError("Превышено максимально допустимое количество")
 
         return data

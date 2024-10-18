@@ -32,7 +32,7 @@ class PaymentModel(models.Model):
         ],
         verbose_name="Фамилия"
     )
-    telephone = PhoneNumberField(
+    phone = PhoneNumberField(
         blank=True,
         region='RU',
         verbose_name='Телефон',
@@ -52,23 +52,6 @@ class PaymentModel(models.Model):
         max_length=100, unique=True,
         default=uuid.uuid4,
         verbose_name="ID платежа",
-    )
-    payment_frequency = models.CharField(
-        max_length=15,
-        choices=[
-                ('one-time', 'Разово'),
-                ('monthly', 'Ежемесячно')
-            ],
-    )
-    type_transfer = models.CharField(
-        max_length=50,
-        verbose_name="Тип перевода",
-        choices=(
-                ('phone_number', 'С помощью телефона'),
-                ('bankcard', 'По карте'),
-                ('qr_code', 'Через QR код')
-        ),
-        default='bankcard',
     )
     comment = models.TextField(
         blank=True,
