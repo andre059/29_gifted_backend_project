@@ -4,10 +4,12 @@ from .models import News, NewsImage
 class NewsImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewsImage
-        fields = ['id', 'image']
+        fields = '__all__'
 
 class NewsSerializer(serializers.ModelSerializer):
-    images = NewsImageSerializer(many=True, read_only=True)
+    images = NewsImageSerializer(
+        many=True, read_only=True,
+        )
 
     class Meta:
         model = News

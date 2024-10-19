@@ -26,19 +26,26 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
                 event_id = request.data.get('event')
                 event = Event.objects.get(pk=event_id)
                 registration = serializer.save(event=event)
-                # Отправка письма
                 self.send_registration_email(registration)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(
+                    serializer.data, status=status.HTTP_201_CREATED,
+                    )
             except ValidationError as e:
-                # Возвращаем сообщение об ошибке
-                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    { 'error': str(e)},
+                    status=status.HTTP_400_BAD_REQUEST,
+                    )
+        return Response(
+            serializer.errors, 
+            status=status.HTTP_400_BAD_REQUEST,
+            )
 
     @action(detail=False, methods=['post'])
     def register(self, request):
         return self.post(request)
 
-    def send_registration_email(self, registration):
+    @classmethod
+    def send_registration_email(cls, registration):
         """ Send registration email """
 
         subject = f"Регистрация на мероприятие: {registration.event.name_of_event}"
@@ -46,6 +53,6 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
                   f"Телефон: {registration.phone}\n" \
                   f"Email: {registration.email}\n" \
                   f"Комментарий: {registration.comment}\n"
-        from_email = "noreply@yourdomain.com"  # Замените на адрес отправителя письма
-        to_email = registration.email  # Адрес получателя письма
+        from_email = "noreply@yourdomain.com"  
+        to_email = registration.email
         send_mail(subject, message, from_email, [to_email])

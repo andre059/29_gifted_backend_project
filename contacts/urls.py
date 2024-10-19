@@ -6,10 +6,8 @@ from .views import ContactPageViewSet
 app_name = ContactsConfig.name
 router = DefaultRouter()
 
-router.register(r'', ContactPageViewSet)
+router.register(r"", ContactPageViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]
-
-

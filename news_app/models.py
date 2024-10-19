@@ -3,56 +3,64 @@ from django.db import models
 import os
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from config.utils import (
+    datetime_field,
+    delete_mediafile_on_delete,
+    char_field_specific_length_without_valid,
+    image_field,
+    text_field_specific_length,
+    url_field
+)
 
-from news_app.utils import docs_path
 
 class News(models.Model):
-    created_at = models.DateTimeField(
-        verbose_name="Дата создания",
-        ) 
-    title = models.CharField(
-        max_length=300, 
-        verbose_name="Заголовок",
-        )
-    content = models.TextField(
-        verbose_name="Содержание",
-        )
-    video = models.URLField(
-        blank=True, 
-        null=True, 
-        verbose_name="Видео",
-        )  
-    short_description = models.TextField(
-        verbose_name="Краткое описание", 
-        blank=True, 
-        null=True,
-        max_length=1000,
-        )
+    created_at = created_at = datetime_field(
+        name="Дата создания",
+        auto_now_add=True
+    )
+
+    title = char_field_specific_length_without_valid(
+        name="Заголовок",
+        number=300
+    )
+    content = text_field_specific_length(
+        name="Содержание",
+        number=1300,
+    )
+    video = url_field(
+        name="Видео",
+        nullable=True
+    )
+
+    short_description = text_field_specific_length(
+        name="Краткое описание",
+        number=1000    
+    )
 
     class Meta:
         verbose_name = "Новость"
         verbose_name_plural = "Новости"
-        ordering = ['created_at']
+        ordering = [
+            'created_at',
+            ]
 
     def __str__(self):
         return self.title
-    
+
     def save(self, *args, **kwargs):
         if not self.short_description:
             self.short_description = self.content[:50]
         super().save(*args, **kwargs)
 
+
 class NewsImage(models.Model):
     news = models.ForeignKey(
-        News, 
-        related_name='images', 
-        on_delete=models.CASCADE, 
+        News,
+        related_name='images',
+        on_delete=models.CASCADE,
         verbose_name="Новость",
-        )
-    image = models.ImageField(
-        upload_to=docs_path, 
-        verbose_name="Изображение",
-        )
+    )
+    link = image_field("Изображение", nullable=True) 
 
     class Meta:
         verbose_name = "Изображение"
@@ -65,17 +73,11 @@ class NewsImage(models.Model):
 @receiver(post_delete, sender=NewsImage)
 def delete_media_on_delete(sender, instance, **kwargs):
     if isinstance(instance, News):
-        # Если удаляется новость, удаляем всю папку с медиафайлами
-        folder_path = os.path.join('media', f'news/{instance.id}')
-        if os.path.exists(folder_path):
-            try:
-                shutil.rmtree(folder_path)
-            except Exception as e:
-                print(f"Error removing {folder_path}: {e}")
+        for image in instance.images.all():
+            delete_mediafile_on_delete(
+                sender=NewsImage, instance=image, **kwargs,
+                )
     elif isinstance(instance, NewsImage):
-        if instance.image:
-            image_path = instance.image.path
-            try:
-                os.remove(image_path)
-            except FileNotFoundError:
-                pass
+        delete_mediafile_on_delete(
+            sender=NewsImage, instance=instance, **kwargs,
+            )

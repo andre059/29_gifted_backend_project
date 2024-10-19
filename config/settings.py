@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import sentry_sdk
 from dotenv import load_dotenv
+from yookassa import Configuration
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -52,7 +53,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'corsheaders',
-    'django_celery_beat',
 
     'users',
     'about_us_app',
@@ -181,22 +181,12 @@ CORS_ALLOW_ALL_HEADERS = True
 CORS_ALLOW_ALL_METHODS = True
 
 MAX_BALANCE_DIGITS = 11
-REDIS = os.getenv('GIFTED_29_REDIS')
-CELERY_BROKER_URL = f'redis://{REDIS}:6379'
-CELERY_RESULT_BACKEND = f'redis://{REDIS}:6379'
-CELERY_TASK_TRACK_STARTED = True
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Europe/Moscow'
-CELERY_BEAT_SCHEDULE = {
-    'process_recurring_payments': {
-        'task': 'transfer_app.tasks.process_recurring_payments',
-        'schedule': 10.0,
-    },
-}
 
-ACCOUNT_ID = os.getenv('GIFTED_29_ACCOUNT_ID')
-SHOP_SECRET_KEY = os.getenv('GIFTED_29_SHOP_SECRET_KEY')
+YANDEX_ACCOUNT_ID = os.getenv('GIFTED_29_YANDEX_ACCOUNT_ID')
+Configuration.account_id = YANDEX_ACCOUNT_ID
+YANDEX_SECRET_KEY = os.getenv('GIFTED_29_YANDEX_SECRET_KEY')
+Configuration.secret_key = YANDEX_SECRET_KEY
+SITE_URL = os.getenv('GIFTED_29_SITE_URL')
+
 # Разрешаем загрузку файла со стороны пользователя не более 1 Мб
 MAX_UPLOAD_SIZE = os.getenv('GIFTED_29_MAX_UPLOAD_SIZE') * 1024 * 1024
