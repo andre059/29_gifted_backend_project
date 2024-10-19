@@ -3,15 +3,21 @@ from django.contrib import admin
 from .models import News, NewsImage
 
 class DeleteMixin:
-    delete = forms.BooleanField(required=False, initial=False, label='Удалить')
+    delete = forms.BooleanField(
+        required=False, initial=False, label='Удалить',
+        )
 
 
 class NewsImageForm(forms.ModelForm, DeleteMixin):
-    delete = forms.BooleanField(required=False, initial=False, label='Удалить')
+    delete = forms.BooleanField(
+        required=False, initial=False, label='Удалить',
+        )
 
     class Meta:
         model = NewsImage
-        fields = ['link']
+        fields = [
+            'link',
+            ]
 
 
 class NewsImageInline(admin.TabularInline):
@@ -30,7 +36,10 @@ class NewsImageInline(admin.TabularInline):
 class NewsAdminForm(forms.ModelForm):
     class Meta:
         model = News
-        fields = ['title', 'short_description', 'content', 'video']
+        fields = [
+            'title', 'short_description',
+             'content', 'video',
+             ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -58,7 +67,10 @@ class NewsAdmin(admin.ModelAdmin):
 
     def get_fields(self, request, obj=None):
         fields = super().get_fields(request, obj)
-        return ['created_at', 'title', 'short_description', 'content', 'video']
+        return [
+            'created_at', 'title', 'content', 
+            'video', 'short_description',
+            ]
 
     def get_queryset(self, request):
         return super().get_queryset(request)

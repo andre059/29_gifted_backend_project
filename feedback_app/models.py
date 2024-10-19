@@ -1,17 +1,17 @@
 from django.db import models
 from config.utils import (
-    charfield_validator_letters_and_extra,
-    imagefield,
-    textfield_specific_length,
+    char_field_validator_letters_and_extra,
+    image_field,
+    text_field_for_comment, datetime_field
 )
 
 
 class Feedback(models.Model):
-    name = charfield_validator_letters_and_extra("Имя", 100, extra=("-",))
-    lastname = charfield_validator_letters_and_extra("Фамилия", 100, extra=("-",))
-    link = imagefield("Фото", nullable=True)
-    content = textfield_specific_length("Текст отзыва", 1000)
-    date_create = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True, null=True)
+    name = char_field_validator_letters_and_extra("Имя", 100, extra=("-",))
+    lastname = char_field_validator_letters_and_extra("Фамилия", 100, extra=("-",))
+    link = image_field("Фото", nullable=True)
+    content = text_field_for_comment("Текст отзыва",)
+    date_create = datetime_field("Дата создания", auto_now_add=True)
 
     @property
     def content_short(self) -> str:

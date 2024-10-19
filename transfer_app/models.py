@@ -1,86 +1,29 @@
-import uuid
-
-from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
-
-from events_app.validators import validate_name_or_surname, validate_no_mixed_scripts, \
-    validate_number_of_spaces_or_dashes, validate_email, validate_comment
+from config.utils import (
+    phone_number_field,
+    char_field_validator_letters_and_extra,
+    decimal_field,
+    char_field_with_default,
+    char_field_for_payment,
+    email_field, text_field_for_comment, datetime_field
+)
 
 
 class PaymentModel(models.Model):
-    name = models.CharField(
-        max_length=64,
-        validators=[
-            MinLengthValidator(1, _("Имя должно быть не менее 1 символа")),
-            MaxLengthValidator(64, _("Имя должно быть не более 64 символов")),
-            validate_name_or_surname,
-            validate_no_mixed_scripts,
-            validate_number_of_spaces_or_dashes,
-        ],
-        verbose_name="Имя",
-    )
-    surname = models.CharField(
-        max_length=100,
-        validators=[
-            MinLengthValidator(1, _("Фамилия должна быть не менее 1 символа")),
-            MaxLengthValidator(64, _("Фамилия должна быть не более 64 символов")),
-            validate_name_or_surname,
-            validate_no_mixed_scripts,
-            validate_number_of_spaces_or_dashes
-        ],
-        verbose_name="Фамилия"
-    )
-    phone = PhoneNumberField(
-        blank=True,
-        region='RU',
-        verbose_name='Телефон',
-    )
-    email = models.EmailField(
-        validators=[
-            MaxLengthValidator(254, _("Email не может быть длиннее 254 символов")),
-            validate_email,
-        ],
-        verbose_name="Электронная почта")
-    transfer_amount = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name="Сумма перевода",
-    )
-    payment_id = models.CharField(
-        max_length=100, unique=True,
-        default=uuid.uuid4,
-        verbose_name="ID платежа",
-    )
-    comment = models.TextField(
-        blank=True,
-        verbose_name="Комментарий",
-        validators=[
-            MaxLengthValidator(200, _("Комментарий не может быть длиннее 200 символов.")),
-            validate_no_mixed_scripts,
-            validate_number_of_spaces_or_dashes,
-            validate_comment,
-        ]
-    )
-    status = models.CharField(
-        max_length=20,
-        default='pending',
-    )
-    is_accepted = models.BooleanField(
-        default=False,
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Дата и время создания",
-    )
-    updated_at = models.DateTimeField(
-        auto_now=True,
-        verbose_name="Дата и время обновления",
-    )
+    name = name = char_field_validator_letters_and_extra("Имя", 100, ("-",))
+    last_name = char_field_validator_letters_and_extra("Фамилия", 100, ("-",))
+    phone = phone_number_field("Телефон")
+    email = email_field("Электронная почта")
+    transfer_amount = decimal_field("Сумма перевода",)
+    payment_id = char_field_for_payment("ID платежа", 100)
+    comment = text_field_for_comment("Комментарий",)
+    status = char_field_with_default(name="Статус платежа", number=20, default='pending',)
+    created_at = datetime_field("Дата и время создания", auto_now_add=True,)
+    updated_at = datetime_field("Дата и время обновления", auto_now=True,)
 
     def __str__(self):
-        return f"Перевод {self.transfer_amount} от {self.name} {self.surname}"
+        return f"Перевод {self.transfer_amount} от {self.name} {self.last_name}"
 
     class Meta:
         verbose_name = _("Платеж")

@@ -10,9 +10,15 @@ from .views import (
 app_name = AboutUsAppConfig.name
 router = DefaultRouter()
 
-router.register(r"people", FriendViewSet)
-router.register(r"companies", CompanyViewSet)
-router.register(r"volunteer", VolunteerViewSet)
+router.register(
+    r"people", FriendViewSet,
+    )
+router.register(
+    r"companies", CompanyViewSet,
+    )
+router.register(
+    r"volunteer", VolunteerViewSet,
+    )
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -1,16 +1,15 @@
 from django.db import models
 from config.utils import (
-    charfield_only_limit_digits,
-    charfield_specific_length_without_valid,
-    charfield_validator_letters_and_extra,
-    imagefield,
-    charfield_with_choices,
-    filefield,
-    textfield_specific_length,
+    char_field_only_limit_digits,
+    char_field_specific_length_without_valid,
+    char_field_validator_letters_and_extra,
+    image_field,
+    char_field_with_choices,
+    file_field,
+    text_field_specific_length
 )
 
 
-# Виды документов
 CHOISE = {
     "1": "Документы",
     "2": "Отчетность",
@@ -32,13 +31,13 @@ class Abstract(models.Model):
 
 
 class TeamMember(Abstract):
-    name = charfield_validator_letters_and_extra("Имя", 100, ("-",))
-    last_name = charfield_validator_letters_and_extra("Фамилия", 100, ("-",))
-    surname = charfield_validator_letters_and_extra(
+    name = char_field_validator_letters_and_extra("Имя", 100, ("-",))
+    last_name = char_field_validator_letters_and_extra("Фамилия", 100, ("-",))
+    surname = char_field_validator_letters_and_extra(
         "Отчество", 100, (" ",), nullable=True
     )
-    role = charfield_specific_length_without_valid("Роль в проекте", 100)
-    link = imagefield("Фото", nullable=True)
+    role = char_field_specific_length_without_valid("Роль в проекте", 100)
+    link = image_field("Фото", nullable=True)
 
     class Meta:
         verbose_name = "Члена команды"
@@ -49,10 +48,10 @@ class TeamMember(Abstract):
 
 
 class Document(Abstract):
-    name = charfield_specific_length_without_valid("Название", 255)
-    category = charfield_with_choices("Категория", CHOISE)
-    link = filefield("Документ")
-    description = textfield_specific_length("Описание", 1000)
+    name = char_field_specific_length_without_valid("Название", 255)
+    category = char_field_with_choices("Категория", CHOISE)
+    link = file_field("Документ")
+    description = text_field_specific_length("Описание", 1000)
 
     class Meta:
         verbose_name = "Документ"
@@ -63,25 +62,19 @@ class Document(Abstract):
 
 
 class OrganizationDetail(Abstract):
-    name = charfield_specific_length_without_valid("Название", 255)
-    legal_address = charfield_specific_length_without_valid("Юридический адрес", 255)
-    address = charfield_specific_length_without_valid("Физический адрес", 255)
+    name = char_field_specific_length_without_valid("Название", 255)
+    legal_address = char_field_specific_length_without_valid("Юридический адрес", 255)
+    address = char_field_specific_length_without_valid("Физический адрес", 255)
 
-    # ОГРН ― это код из 13 цифр, разделенных на шесть групп. Пример: 1 21 55 73 93522 0
-    ogrn_number = charfield_only_limit_digits("ОГРН", 13)
-    # Всего у ИНН юридических лиц десять цифр
-    inn_number = charfield_only_limit_digits("ИНН", 10)
-    # КПП состоит из 9 знаков
-    kpp_number = charfield_only_limit_digits("КПП", 9)
-    # номер банковского расчётного счёта представляет собой двадцатизначное число
-    current_account = charfield_only_limit_digits("Расчетный счет", 20)
-    # БИК — это девятизначный уникальный номер, который есть у каждого банковского отделения на территории России.
-    bik = charfield_only_limit_digits("БИК", 9)
-    # В России номера корреспондентских счетов состоят из 20 десятичных разрядов
-    correspondent_account = charfield_only_limit_digits("Корр. счет", 20)
+    ogrn_number = char_field_only_limit_digits("ОГРН", 13)
+    inn_number = char_field_only_limit_digits("ИНН", 10)
+    kpp_number = char_field_only_limit_digits("КПП", 9)
+    current_account = char_field_only_limit_digits("Расчетный счет", 20)
+    bik = char_field_only_limit_digits("БИК", 9)
+    correspondent_account = char_field_only_limit_digits("Корр. счет", 20)
 
-    director = charfield_validator_letters_and_extra("ФИО директора", 255, ("-", " "))
-    link = imagefield("QR-код банка", nullable=True)
+    director = char_field_validator_letters_and_extra("ФИО директора", 255, ("-", " "))
+    link = image_field("QR-код банка", nullable=True)
 
     class Meta:
         verbose_name = "Реквизиты организации"

@@ -3,28 +3,17 @@ import os
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
-from config.utils import charfield_specific_length_without_valid, charfield_address_specific_length_with_nullability, \
-    textfield_specific_length, datetime_field_with_nullability, charfield_length_validation, emailfield_validation, \
-    textfield_validation, datetime_field_with, boolean_field, phone_number_field
+from config.utils import char_field_specific_length_without_valid, char_field_address_specific_length_with_nullability, \
+    text_field_specific_length, datetime_field_with_nullability, char_field_length_validation, email_field_validation, \
+    text_field_validation, datetime_field, boolean_field, phone_number_field, image_field, file_field, url_field
 
-NULLABLE = {"blank": True, "null": True}
-
-
-def docs_path(instance, filename: str) -> str:
-    """
-    Создает путь для сохранения медиафайла в папке media в виде:
-    /имя_приложения/класс/имя_файла
-    """
-    return (
-        f"{__name__.split('.', maxsplit=1)[0]}/{instance.__class__.__name__}/{filename}"
-    )
 
 
 class Event(models.Model):
 
-    name_of_event = charfield_specific_length_without_valid("Название мероприятия", 300,)
-    description_of_event = textfield_specific_length("Описание мероприятия", 2000)
-    address_of_event = charfield_address_specific_length_with_nullability("Адрес проведения мероприятия", 500,)
+    name_of_event = char_field_specific_length_without_valid("Название мероприятия", 300,)
+    description_of_event = text_field_specific_length("Описание мероприятия", 2000)
+    address_of_event = char_field_address_specific_length_with_nullability("Адрес проведения мероприятия", 500,)
     date_time_of_event = datetime_field_with_nullability("Дата и время проведения мероприятия",)
     end_of_event = datetime_field_with_nullability("Дата и время завершения мероприятия")
 
@@ -52,8 +41,10 @@ class Event(models.Model):
 
 class EventPhoto(models.Model):
 
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="photo")
-    link = models.ImageField(upload_to=docs_path, **NULLABLE)
+    event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, related_name="photo",
+        )
+    link = image_field("Фото мероприятия", nullable=True)
 
     def __str__(self):
         return f"Фото для {self.event}"
@@ -66,7 +57,7 @@ class EventPhoto(models.Model):
 class EventVideo(models.Model):
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="video")
-    link = models.FileField(upload_to=docs_path, **NULLABLE)
+    link = file_field("Видео мероприятия", nullable=True)
 
     def __str__(self):
         return f"Видео для {self.event}"
@@ -81,10 +72,7 @@ class EventLinkVideo(models.Model):
     event = models.ForeignKey(
         Event, on_delete=models.CASCADE, related_name="link_video"
     )
-    link_video = models.TextField(verbose_name="Ссылка на видео")
-    date = models.DateField(
-        auto_now_add=True, verbose_name="Дата добавления", **NULLABLE
-    )
+    link_video = url_field("Ссылка на видео")
 
     def __str__(self):
         return f"Ссылка на видео для {self.event}"
@@ -97,13 +85,16 @@ class EventLinkVideo(models.Model):
 class Registration(models.Model):
     """Модель для записи на мероприятие"""
 
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="registrations", verbose_name="Мероприятие")
-    first_name = charfield_length_validation("Имя", 64)
-    last_name = charfield_length_validation("Фамилия", 64)
+    event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, 
+        related_name="registrations", verbose_name="Мероприятие",
+        )
+    first_name = char_field_length_validation("Имя", 64)
+    last_name = char_field_length_validation("Фамилия", 64)
     phone = phone_number_field('Телефон')
-    email = emailfield_validation("Электронная почта")
-    comment = textfield_validation("Комментарий", )
-    timestamp = datetime_field_with("Дата и время регистрации")
+    email = email_field_validation("Электронная почта")
+    comment = text_field_validation("Комментарий", )
+    timestamp = datetime_field("Дата и время регистрации", auto_now_add=True,)
     terms_agreed = boolean_field("Согласие с условиями")
 
     def __str__(self):

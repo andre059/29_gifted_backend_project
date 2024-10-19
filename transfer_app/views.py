@@ -22,7 +22,7 @@ class PaymentFormView(APIView):
             PaymentModel.objects.create(
                 payment_id=payment.id,
                 name=data['name'],
-                surname=data['surname'],
+                last_name=data['last_name'],
                 phone=data['phone'],
                 email=data['email'],
                 transfer_amount=data['transfer_amount'],

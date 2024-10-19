@@ -6,7 +6,9 @@ from .views import DeveloperViewSet
 app_name = TeamConfig.name
 router = DefaultRouter()
 
-router.register(r'', DeveloperViewSet)
+router.register(
+    r'', DeveloperViewSet,
+    )
 
 urlpatterns = [
     path('', include(router.urls)),

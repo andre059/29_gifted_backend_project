@@ -12,11 +12,11 @@ class PaymentSerializer(serializers.ModelSerializer):
 class PaymentFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentModel
-        fields = ['name', 'surname', 'phone', 'email', 'transfer_amount', 'comment']
+        fields = ['name', 'last_name', 'phone', 'email', 'transfer_amount', 'comment']
 
     def validate(self, data):
         # Проверка наличия всех обязательных полей
-        required_fields = ['name', 'surname', 'phone', 'email', 'transfer_amount', 'comment']
+        required_fields = ['name', 'last_name', 'phone', 'email', 'transfer_amount', 'comment']
         for field in required_fields:
             if field not in data:
                 raise serializers.ValidationError(f"Обязательное поле '{field}' отсутствует.")

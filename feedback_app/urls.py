@@ -6,7 +6,9 @@ from feedback_app.views import FeedbackAPIView
 
 app_name = FeedbackAppConfig.name
 router = DefaultRouter()
-router.register(r"", FeedbackAPIView)
+router.register(
+    r"", FeedbackAPIView,
+    )
 
 urlpatterns = [
     path("", include(router.urls)),

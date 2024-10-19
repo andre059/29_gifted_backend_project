@@ -5,11 +5,12 @@ from projects_app.models import Project, ProjectImage
 class ProjectImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectImage
-        fields = ["id", "link"]
-
+        fields = "__all__"
 
 class ProjectSerializer(serializers.ModelSerializer):
-    images = ProjectImageSerializer(many=True, read_only=True)
+    images = ProjectImageSerializer(
+        many=True, read_only=True,
+        )
 
     class Meta:
         model = Project

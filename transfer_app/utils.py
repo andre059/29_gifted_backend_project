@@ -1,5 +1,3 @@
-import uuid
-
 from yookassa import Payment
 
 from config.settings import SITE_URL
@@ -7,8 +5,6 @@ from django.core.exceptions import ValidationError
 from rest_framework.request import Request
 from transfer_app.models import PaymentModel
 from rest_framework.exceptions import APIException
-from rest_framework.response import Response
-from rest_framework import status
 
 
 
@@ -20,12 +16,12 @@ def create_payment(amount: int, description: str):
         },
         "confirmation": {
             "type": "redirect",
-            "return_url": f"{SITE_URL}/payment-status/"
+            "return_url": f"https://{SITE_URL}"
         },
         "capture": True,
         "description": description
     }
-    payment = Payment.create(payment_data, uuid.uuid4())
+    payment = Payment.create(payment_data)
     return payment
 
 def set_payment_status(request: Request):

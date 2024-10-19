@@ -10,10 +10,11 @@ class ProjectImageInline(admin.TabularInline):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = (
-        "name",
-        "truncated_field",
+        "name", "truncated_field",
     )
-    search_fields = ("name",)
+    search_fields = (
+        "name",
+        )
     inlines = [
         ProjectImageInline,
     ]
