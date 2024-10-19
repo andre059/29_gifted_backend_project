@@ -29,8 +29,15 @@ class PaymentFormView(APIView):
                 comment=data['comment']
             )
 
-            return Response({"payment_url": payment.confirmation.confirmation_url, "payment_id": payment.id}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"payment_url": payment.confirmation.confirmation_url, 
+                 "payment_id": payment.id}, 
+                 status=status.HTTP_200_OK,
+                 )
+        return Response(
+            serializer.errors, 
+            status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class PaymentProcessingView(APIView):
@@ -38,19 +45,26 @@ class PaymentProcessingView(APIView):
     def post(self, request: Request):
         try:
             payment = set_payment_status(request)
-            return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_200_OK)
+            return Response(
+                {"payment_id": payment.payment_id, 
+                 "payment_status": payment.status}, 
+                 status=status.HTTP_200_OK,
+                 )
         except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST,
+                )
 
 
-class PaymentSuccessView(APIView):
+# class PaymentSuccessView(APIView):
 
-    def post(self, request: Request):
-        try:
-            payment = set_payment_status(request)
-            if payment.status == 'succeeded':
-                return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_200_OK)
-            else:
-                return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_400_BAD_REQUEST)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request: Request):
+#         try:
+#             payment = set_payment_status(request)
+#             if payment.status == 'succeeded':
+#                 return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_200_OK)
+#             else:
+#                 return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_400_BAD_REQUEST)
+#         except ValidationError as e:
+#             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

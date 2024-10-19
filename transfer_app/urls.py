@@ -1,7 +1,7 @@
 from django.urls import path
 
 from transfer_app.apps import PaymentAppConfig
-from transfer_app.views import PaymentFormView, PaymentProcessingView, PaymentSuccessView
+from transfer_app.views import PaymentFormView, PaymentProcessingView
 
 app_name = PaymentAppConfig.name
 
