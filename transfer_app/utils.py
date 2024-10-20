@@ -1,4 +1,5 @@
 from yookassa import Payment
+import time
 
 from config.settings import SITE_URL
 from django.core.exceptions import ValidationError
@@ -31,6 +32,7 @@ def set_payment_status(request: Request):
             raise ValidationError("Требуется идентификатор платежа")
 
         payment_db = PaymentModel.objects.get(payment_id=payment_id)
+        time.sleep(660)
         
         payment_yookassa = Payment.find_one(payment_id)
         if not payment_yookassa:

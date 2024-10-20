@@ -57,6 +57,7 @@ def char_field_with_default(name: str, number: int, default: str) -> models.Char
     return models.CharField(
         verbose_name=f"{name}",
         max_length=number,
+        default=default,
         help_text=f"Текст не более {number} символов",
     )
 
