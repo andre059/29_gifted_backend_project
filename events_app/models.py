@@ -5,7 +5,7 @@ from django.dispatch import receiver
 
 from config.utils import char_field_specific_length_without_valid, char_field_address_specific_length_with_nullability, \
     text_field_specific_length, datetime_field_with_nullability, char_field_length_validation, email_field_validation, \
-    text_field_validation, datetime_field, boolean_field, phone_number_field, image_field, file_field, url_field
+    text_field_validation, datetime_field, boolean_field, phone_number_field, image_field, video_field, url_field
 
 
 
@@ -57,7 +57,7 @@ class EventPhoto(models.Model):
 class EventVideo(models.Model):
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="video")
-    link = file_field("Видео мероприятия", nullable=True)
+    link = video_field("Видео мероприятия", nullable=True)
 
     def __str__(self):
         return f"Видео для {self.event}"
@@ -93,7 +93,7 @@ class Registration(models.Model):
     last_name = char_field_length_validation("Фамилия", 64)
     phone = phone_number_field('Телефон')
     email = email_field_validation("Электронная почта")
-    comment = text_field_validation("Комментарий", )
+    comment = text_field_validation("Комментарий",)
     timestamp = datetime_field("Дата и время регистрации", auto_now_add=True,)
     terms_agreed = boolean_field("Согласие с условиями")
 

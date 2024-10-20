@@ -6,7 +6,7 @@ from config.utils import (
     decimal_field,
     char_field_with_default,
     char_field_for_payment,
-    email_field, text_field_for_comment, datetime_field
+    email_field, text_field_validation, datetime_field
 )
 
 
@@ -17,7 +17,7 @@ class PaymentModel(models.Model):
     email = email_field("Электронная почта")
     transfer_amount = decimal_field("Сумма перевода",)
     payment_id = char_field_for_payment("ID платежа", 100)
-    comment = text_field_for_comment("Комментарий",)
+    comment = text_field_validation("Комментарий",)
     status = char_field_with_default(name="Статус платежа", number=20, default='pending',)
     created_at = datetime_field("Дата и время создания", auto_now_add=True,)
     updated_at = datetime_field("Дата и время обновления", auto_now=True,)

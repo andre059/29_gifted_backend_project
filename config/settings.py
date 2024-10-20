@@ -189,4 +189,5 @@ Configuration.secret_key = YANDEX_SECRET_KEY
 SITE_URL = os.getenv('GIFTED_29_SITE_URL')
 
 # Разрешаем загрузку файла со стороны пользователя не более 1 Мб
-MAX_UPLOAD_SIZE = os.getenv('GIFTED_29_MAX_UPLOAD_SIZE') * 1024 * 1024
+IMAGE_AND_DOCS_UPLOAD_SIZE= int(os.getenv('GIFTED_29_IMAGE_AND_DOCS_UPLOAD_SIZE')) 
+VIDEO_UPLOAD_SIZE= int(os.getenv('GIFTED_29_VIDEO_UPLOAD_SIZE'))

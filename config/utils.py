@@ -1,20 +1,26 @@
 import os
-import uuid
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db import models
 from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
-from config.settings import MAX_UPLOAD_SIZE
-from django.template.defaultfilters import filesizeformat
+from config.settings import IMAGE_AND_DOCS_UPLOAD_SIZE, VIDEO_UPLOAD_SIZE
 from config.validators import validate_no_mixed_scripts, validate_name_or_surname, \
     validate_number_of_spaces_or_dashes, validate_email, validate_comment
+from django.core.exceptions import ValidationError
 
 NULLABLE = {"blank": True, "null": True}
 
 
+def validate_file_size(value):
+    if value.size > IMAGE_AND_DOCS_UPLOAD_SIZE * 1024 * 1024:
+        raise ValidationError(f"Размер файла не должен превышать {IMAGE_AND_DOCS_UPLOAD_SIZE} МБ")
+    
+def validate_video_size(value):
+    if value.size > VIDEO_UPLOAD_SIZE * 1024 * 1024:
+        raise ValidationError(f"Размер файла не должен превышать {VIDEO_UPLOAD_SIZE} МБ")
+    
 def docs_path(instance, filename: str) -> str:
     """
     Создает путь для сохранения медиафайла в папке media в виде:
@@ -89,6 +95,7 @@ def image_field(name: str, nullable=False) -> models.ImageField:
         verbose_name=f"{name}",
         help_text=f"Добавьте {name} {text}",
         **nullable,
+        validators=[validate_file_size],
     )
 
 
@@ -123,6 +130,22 @@ def file_field(name: str, nullable=False) -> models.FileField:
         verbose_name=f"{name}",
         help_text=f"Добавьте {name} {text}",
         **nullable,
+        validators=[validate_file_size],
+    )
+def video_field(name: str, nullable=False) -> models.FileField:
+    """
+    Создает поле FileField
+    """
+    
+    text = "(необязательно)" if nullable else ""
+    nullable = NULLABLE if nullable else {}
+
+    return models.FileField(
+        upload_to=docs_path,
+        verbose_name=f"{name}",
+        help_text=f"Добавьте {name} {text}",
+        **nullable,
+        validators=[validate_video_size],
     )
 
 
@@ -136,7 +159,7 @@ def text_field_specific_length(name: str, number: int) -> models.TextField:
         help_text=f"Не более {number} символов",
     )
 
-def text_field_for_comment(name: str) -> models.TextField:
+def text_field_validation(name: str) -> models.TextField:
     """
     Создает поле TextField для комментариев
     """
@@ -161,17 +184,6 @@ def email_field(text: str) -> models.EmailField:
         help_text="Введите email: example@mail.com",
         max_length=254,
     )
-
-
-def check_file(self):
-    """
-    Ограничение размера загружаемого файла
-    """
-    if self.size > MAX_UPLOAD_SIZE:
-        raise serializers.ValidationError(
-            f"Пожалуйста, не превышайте размер файла {filesizeformat(MAX_UPLOAD_SIZE)}. Текущий размер файла {filesizeformat(self.size)}"
-        )
-    return self
 
 
 @receiver(post_delete)
@@ -246,20 +258,6 @@ def email_field_validation(name: str) -> models.EmailField:
     )
 
 
-def text_field_validation(name: str) -> models.TextField:
-    """
-    Создает поле TextField с дополнительными параметрами и валидаторами.
-    """
-    return models.TextField(
-        verbose_name=name,
-        blank=f"{True}",
-        validators=[
-            MaxLengthValidator(200, _("Комментарий не может быть длиннее 200 символов.")),
-            validate_no_mixed_scripts,
-            validate_number_of_spaces_or_dashes,
-            validate_comment,
-        ]
-    )
 
 
 def datetime_field(name: str, auto_now_add=False, auto_now=False) -> models.DateTimeField:
