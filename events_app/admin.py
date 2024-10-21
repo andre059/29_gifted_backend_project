@@ -26,12 +26,12 @@ class RegistrationInline(admin.TabularInline):
 @admin.register(Event)
 class EventsAdmin(admin.ModelAdmin):
     list_display = (
-        'name_of_event', 'description_of_event',
-        'address_of_event', 'date_time_of_event',
+        "name_of_event", "description_of_event",
+        "address_of_event", "date_time_of_event",
         )
     list_filter = (
-        'name_of_event', 'description_of_event', 
-        'address_of_event', 'date_time_of_event',
+        "name_of_event", "description_of_event", 
+        "address_of_event", "date_time_of_event",
         )
     inlines = [
         EventPhotoInline, EventVideoInline, 

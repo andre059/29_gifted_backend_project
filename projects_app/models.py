@@ -7,7 +7,7 @@ from config.utils import (
 
 
 class Project(models.Model):
-    name = char_field_specific_length_without_valid("Название проекта", 255)
+    name = char_field_specific_length_without_valid("Название проекта", 150)
     content = text_field_specific_length("Описание проекта", 1000)
 
     @property

@@ -6,7 +6,8 @@ from config.utils import (
     image_field,
     char_field_with_choices,
     file_field,
-    text_field_specific_length
+    text_field_specific_length,
+    datetime_field, boolean_field
 )
 
 
@@ -18,10 +19,9 @@ CHOISE = {
 
 
 class Abstract(models.Model):
-    time_create = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
-    time_update = models.DateTimeField(verbose_name="Изменено", auto_now=True)
-    is_published = models.BooleanField(
-        verbose_name="Актуально на сайте",
+    time_create = datetime_field("Создано", auto_now_add=True)
+    time_update = datetime_field("Изменено", auto_now=True)
+    is_published = boolean_field("Актуально на сайте",
         default=True,
         help_text="Если уже неактуально, но может понадобиться, снимите флажок",
     )

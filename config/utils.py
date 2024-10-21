@@ -1,20 +1,26 @@
 import os
-import uuid
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db import models
 from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
-from config.settings import MAX_UPLOAD_SIZE
-from django.template.defaultfilters import filesizeformat
+from config.settings import IMAGE_AND_DOCS_UPLOAD_SIZE, VIDEO_UPLOAD_SIZE
 from config.validators import validate_no_mixed_scripts, validate_name_or_surname, \
     validate_number_of_spaces_or_dashes, validate_email, validate_comment
+from django.core.exceptions import ValidationError
 
 NULLABLE = {"blank": True, "null": True}
 
 
+def validate_file_size(value):
+    if value.size > IMAGE_AND_DOCS_UPLOAD_SIZE * 1024 * 1024:
+        raise ValidationError(f"Размер файла не должен превышать {IMAGE_AND_DOCS_UPLOAD_SIZE} МБ")
+    
+def validate_video_size(value):
+    if value.size > VIDEO_UPLOAD_SIZE * 1024 * 1024:
+        raise ValidationError(f"Размер файла не должен превышать {VIDEO_UPLOAD_SIZE} МБ")
+    
 def docs_path(instance, filename: str) -> str:
     """
     Создает путь для сохранения медиафайла в папке media в виде:
@@ -23,7 +29,9 @@ def docs_path(instance, filename: str) -> str:
     return f"{instance._meta.app_label}/{instance.__class__.__name__}/{filename}"
 
 
-def char_field_only_limit_digits(name: str, number: int) -> models.CharField:
+def char_field_only_limit_digits(
+        name: str, number: int
+        ) -> models.CharField:
     """
     Создает поле CharField только с цифрами с ограничением по количеству цифр
     """
@@ -44,20 +52,23 @@ def char_field_specific_length_without_valid(name: str, number: int) -> models.C
         max_length=number,
         help_text=f"Текст не более {number} символов",
     )
-def char_field_with_default(name: str, number: int, default: str) -> models.CharField:
+def char_field_with_default(
+        name: str, number: int, default: str
+        ) -> models.CharField:
     """
     Создает поле CharField определенной длины, без валидации
     """
     return models.CharField(
         verbose_name=f"{name}",
         max_length=number,
+        default=default,
         help_text=f"Текст не более {number} символов",
     )
 
 
 def char_field_validator_letters_and_extra(
     name: str, number: int, extra=(), nullable=False
-) -> models.CharField:
+    ) -> models.CharField:
     """
     Создает поле CharField с валидатором: только буквы и символы из extra, исключая остальные символы
     """
@@ -89,6 +100,7 @@ def image_field(name: str, nullable=False) -> models.ImageField:
         verbose_name=f"{name}",
         help_text=f"Добавьте {name} {text}",
         **nullable,
+        validators=[validate_file_size],
     )
 
 
@@ -123,6 +135,22 @@ def file_field(name: str, nullable=False) -> models.FileField:
         verbose_name=f"{name}",
         help_text=f"Добавьте {name} {text}",
         **nullable,
+        validators=[validate_file_size],
+    )
+def video_field(name: str, nullable=False) -> models.FileField:
+    """
+    Создает поле FileField
+    """
+    
+    text = "(необязательно)" if nullable else ""
+    nullable = NULLABLE if nullable else {}
+
+    return models.FileField(
+        upload_to=docs_path,
+        verbose_name=f"{name}",
+        help_text=f"Добавьте {name} {text}",
+        **nullable,
+        validators=[validate_video_size],
     )
 
 
@@ -136,7 +164,7 @@ def text_field_specific_length(name: str, number: int) -> models.TextField:
         help_text=f"Не более {number} символов",
     )
 
-def text_field_for_comment(name: str) -> models.TextField:
+def text_field_validation(name: str) -> models.TextField:
     """
     Создает поле TextField для комментариев
     """
@@ -163,24 +191,13 @@ def email_field(text: str) -> models.EmailField:
     )
 
 
-def check_file(self):
-    """
-    Ограничение размера загружаемого файла
-    """
-    if self.size > MAX_UPLOAD_SIZE:
-        raise serializers.ValidationError(
-            f"Пожалуйста, не превышайте размер файла {filesizeformat(MAX_UPLOAD_SIZE)}. Текущий размер файла {filesizeformat(self.size)}"
-        )
-    return self
-
-
 @receiver(post_delete)
 def delete_mediafile_on_delete(sender, instance, **kwargs):
     """
     Удаляет медиафайл с именем переменной link из папки проекта при удалении записи в БД
     """
     # важно!!! все переменные, сохраняющие файл в БД должны иметь имя link
-    if "link" in instance.__class__.__dict__.keys():
+    if "link" in instance.__class__.__dict__.keys() and instance.link:
         # Получаем путь ссылки
         link_path = instance.link.path
         # Проверяем, существует ли файл по указанному пути
@@ -246,20 +263,6 @@ def email_field_validation(name: str) -> models.EmailField:
     )
 
 
-def text_field_validation(name: str) -> models.TextField:
-    """
-    Создает поле TextField с дополнительными параметрами и валидаторами.
-    """
-    return models.TextField(
-        verbose_name=name,
-        blank=f"{True}",
-        validators=[
-            MaxLengthValidator(200, _("Комментарий не может быть длиннее 200 символов.")),
-            validate_no_mixed_scripts,
-            validate_number_of_spaces_or_dashes,
-            validate_comment,
-        ]
-    )
 
 
 def datetime_field(name: str, auto_now_add=False, auto_now=False) -> models.DateTimeField:

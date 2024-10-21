@@ -4,4 +4,4 @@ from .models import Developer
 class DeveloperSerializer(serializers.ModelSerializer):
     class Meta:
         model = Developer
-        fields = '__all__'
+        fields = "__all__"

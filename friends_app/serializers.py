@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Friend, Company, Volunteer
-from config.utils import check_file
 
 
 class FriendSerializer(serializers.ModelSerializer):
@@ -16,7 +15,6 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class VolunteerSerializer(serializers.ModelSerializer):
-    link = serializers.FileField(validators=[check_file])
 
     class Meta:
         model = Volunteer

@@ -4,29 +4,34 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from transfer_app.models import PaymentModel
-from transfer_app.serializers import PaymentFormSerializer
+from transfer_app.serializers import PaymentSerializer
 from transfer_app.utils import create_payment, set_payment_status
 from rest_framework.request import Request
 
 
 class PaymentFormView(APIView):
 
-    serializer_class = PaymentFormSerializer
+    serializer_class = PaymentSerializer
+    http_method_names = ["post"]
+
 
     def post(self, request: Request):
-        serializer = PaymentFormSerializer(data=request.data)
+        serializer = PaymentSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
-            payment = create_payment(data['transfer_amount'], data['comment'])
+            payment = create_payment(
+                data["transfer_amount"], 
+                data["comment"],
+                )
             
             PaymentModel.objects.create(
                 payment_id=payment.id,
-                name=data['name'],
-                last_name=data['last_name'],
-                phone=data['phone'],
-                email=data['email'],
-                transfer_amount=data['transfer_amount'],
-                comment=data['comment']
+                name=data["name"],
+                last_name=data["last_name"],
+                phone=data["phone"],
+                email=data["email"],
+                transfer_amount=data["transfer_amount"],
+                comment=data["comment"]
             )
 
             return Response(
@@ -41,6 +46,7 @@ class PaymentFormView(APIView):
 
 
 class PaymentProcessingView(APIView):
+    http_method_names = ["post"]
 
     def post(self, request: Request):
         try:
@@ -55,16 +61,3 @@ class PaymentProcessingView(APIView):
                 {"error": str(e)}, 
                 status=status.HTTP_400_BAD_REQUEST,
                 )
-
-
-# class PaymentSuccessView(APIView):
-
-#     def post(self, request: Request):
-#         try:
-#             payment = set_payment_status(request)
-#             if payment.status == 'succeeded':
-#                 return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_200_OK)
-#             else:
-#                 return Response({"payment_id": payment.payment_id, "payment_status": payment.status}, status=status.HTTP_400_BAD_REQUEST)
-#         except ValidationError as e:
-#             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
