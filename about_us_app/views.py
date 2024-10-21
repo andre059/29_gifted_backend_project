@@ -13,23 +13,23 @@ from .serializers import (
 class TeamMemberViewSet(viewsets.ModelViewSet):
     queryset = TeamMember.objects.all()
     serializer_class = TeamMemberSerializer
-    http_method_names = ['get']
+    http_method_names = ["get"]
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
-    http_method_names = ['get']
+    http_method_names = ["get"]
 
 
 class OrganizationDetailViewSet(viewsets.ModelViewSet):
     queryset = OrganizationDetail.objects.all()
     serializer_class = OrganizationDetailSerializer
-    http_method_names = ['get']
+    http_method_names = ["get"]
 
 
 class CombinedDataView(APIView):
-    http_method_names = ['get']
+    http_method_names = ["get"]
     def get(self, request, *args, **kwargs):
         teams = TeamMember.objects.all()
         docs = Document.objects.all()

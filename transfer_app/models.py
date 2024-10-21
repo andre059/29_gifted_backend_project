@@ -18,7 +18,7 @@ class PaymentModel(models.Model):
     transfer_amount = decimal_field("Сумма перевода",)
     payment_id = char_field_for_payment("ID платежа", 100)
     comment = text_field_validation("Комментарий",)
-    status = char_field_with_default(name="Статус платежа", number=20, default='pending',)
+    status = char_field_with_default(name="Статус платежа", number=20, default="pending",)
     created_at = datetime_field("Дата и время создания", auto_now_add=True,)
     updated_at = datetime_field("Дата и время обновления", auto_now=True,)
 

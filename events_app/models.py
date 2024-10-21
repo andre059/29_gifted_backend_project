@@ -91,7 +91,7 @@ class Registration(models.Model):
         )
     first_name = char_field_length_validation("Имя", 64)
     last_name = char_field_length_validation("Фамилия", 64)
-    phone = phone_number_field('Телефон')
+    phone = phone_number_field("Телефон")
     email = email_field_validation("Электронная почта")
     comment = text_field_validation("Комментарий",)
     timestamp = datetime_field("Дата и время регистрации", auto_now_add=True,)

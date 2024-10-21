@@ -6,5 +6,5 @@ from rest_framework import viewsets
 class ProjectAPIView(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    http_method_names = ['get']
+    http_method_names = ["get"]
 

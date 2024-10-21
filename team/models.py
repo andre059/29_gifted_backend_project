@@ -14,8 +14,8 @@ class Developer(models.Model):
     link = image_field("Фотография")
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f"{self.first_name} {self.last_name}"
 
     class Meta:
-        verbose_name = 'Разработчик'
-        verbose_name_plural = 'Разработчики'
+        verbose_name = "Разработчик"
+        verbose_name_plural = "Разработчики"

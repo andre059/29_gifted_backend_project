@@ -12,7 +12,7 @@ from rest_framework.request import Request
 class PaymentFormView(APIView):
 
     serializer_class = PaymentSerializer
-    http_method_names = ['post']
+    http_method_names = ["post"]
 
 
     def post(self, request: Request):
@@ -20,18 +20,18 @@ class PaymentFormView(APIView):
         if serializer.is_valid():
             data = serializer.validated_data
             payment = create_payment(
-                data['transfer_amount'], 
-                data['comment'],
+                data["transfer_amount"], 
+                data["comment"],
                 )
             
             PaymentModel.objects.create(
                 payment_id=payment.id,
-                name=data['name'],
-                last_name=data['last_name'],
-                phone=data['phone'],
-                email=data['email'],
-                transfer_amount=data['transfer_amount'],
-                comment=data['comment']
+                name=data["name"],
+                last_name=data["last_name"],
+                phone=data["phone"],
+                email=data["email"],
+                transfer_amount=data["transfer_amount"],
+                comment=data["comment"]
             )
 
             return Response(
@@ -46,7 +46,7 @@ class PaymentFormView(APIView):
 
 
 class PaymentProcessingView(APIView):
-    http_method_names = ['post']
+    http_method_names = ["post"]
 
     def post(self, request: Request):
         try:

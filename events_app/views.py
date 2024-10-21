@@ -12,20 +12,20 @@ class EventsAPIView(viewsets.ModelViewSet):
     """ API view for events """
     queryset = Event.objects.all()
     serializer_class = EventsSerializer
-    http_method_names = ['get']
+    http_method_names = ["get"]
 
 
 class RegistrationsAPIView(viewsets.ModelViewSet):
     """ API for registration """
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
-    http_method_names = ['get', 'post']
+    http_method_names = ["get", "post"]
 
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
             try:
-                event_id = request.data.get('event')
+                event_id = request.data.get("event")
                 event = Event.objects.get(pk=event_id)
                 registration = serializer.save(event=event)
                 self.send_registration_email(registration)
@@ -34,7 +34,7 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
                     )
             except ValidationError as e:
                 return Response(
-                    { 'error': str(e)},
+                    { "error": str(e)},
                     status=status.HTTP_400_BAD_REQUEST,
                     )
         return Response(
@@ -42,7 +42,7 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST,
             )
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=["post"])
     def register(self, request):
         return self.post(request)
 

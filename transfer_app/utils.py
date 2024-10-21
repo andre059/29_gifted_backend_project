@@ -27,7 +27,7 @@ def create_payment(amount: int, description: str):
 
 def set_payment_status(request: Request):
     try:
-        payment_id = request.data.get('payment_id')
+        payment_id = request.data.get("payment_id")
         if not payment_id:
             raise ValidationError("Требуется идентификатор платежа")
 

@@ -4,19 +4,19 @@ from .models import News, NewsImage
 
 class DeleteMixin:
     delete = forms.BooleanField(
-        required=False, initial=False, label='Удалить',
+        required=False, initial=False, label="Удалить",
         )
 
 
 class NewsImageForm(forms.ModelForm, DeleteMixin):
     delete = forms.BooleanField(
-        required=False, initial=False, label='Удалить',
+        required=False, initial=False, label="Удалить",
         )
 
     class Meta:
         model = NewsImage
         fields = [
-            'link',
+            "link",
             ]
 
 
@@ -27,7 +27,7 @@ class NewsImageInline(admin.TabularInline):
     verbose_name_plural = "Изображения"
 
     def save_new_image(self, form, commit=True):
-        if form.cleaned_data.get('delete'):
+        if form.cleaned_data.get("delete"):
             form.instance.delete()
         else:
             return super().save_new_image(form, commit=commit)
@@ -37,8 +37,8 @@ class NewsAdminForm(forms.ModelForm):
     class Meta:
         model = News
         fields = [
-            'title', 'short_description',
-             'content', 'video',
+            "title", "short_description",
+             "content", "video",
              ]
 
     def __init__(self, *args, **kwargs):
@@ -47,11 +47,11 @@ class NewsAdminForm(forms.ModelForm):
 
     def _add_help_text(self):
         help_texts = {
-            'created_at': 'Введите дату и время создания.',
-            'title': 'Введите заголовок новости.',
-            'short_description': 'Введите краткое описание новости.',
-            'content': 'Введите полный текст новости.',
-            'video': 'Вставьте ссылку на видео.'
+            "created_at": "Введите дату и время создания.",
+            "title": "Введите заголовок новости.",
+            "short_description": "Введите краткое описание новости.",
+            "content": "Введите полный текст новости.",
+            "video": "Вставьте ссылку на видео."
         }
         for field_name, help_text in help_texts.items():
             if field_name in self.fields:
@@ -61,15 +61,15 @@ class NewsAdminForm(forms.ModelForm):
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
     form = NewsAdminForm
-    list_display = ['custom_title']
+    list_display = ["custom_title"]
     inlines = [NewsImageInline]
-    readonly_fields = ['created_at']
+    readonly_fields = ["created_at"]
 
     def get_fields(self, request, obj=None):
         fields = super().get_fields(request, obj)
         return [
-            'created_at', 'title', 'content', 
-            'video', 'short_description',
+            "created_at", "title", "content", 
+            "video", "short_description",
             ]
 
     def get_queryset(self, request):
@@ -77,4 +77,4 @@ class NewsAdmin(admin.ModelAdmin):
 
     def custom_title(self, obj):
         return obj.title
-    custom_title.short_description = 'Новость'
+    custom_title.short_description = "Новость"

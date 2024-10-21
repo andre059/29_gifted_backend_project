@@ -9,7 +9,7 @@ from drf_yasg import openapi
 schema_view = get_schema_view(
     openapi.Info(
         title="Gifted Hearts",
-        default_version='v1',
+        default_version="v1",
         description="Gifted Hearts Backend API",
     ),
     public=True,
@@ -17,18 +17,18 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/about-us/', include('about_us_app.urls', namespace='about-us')),
-    path('api/event/', include('events_app.urls', namespace='event')),
-    path('api/feedback/', include('feedback_app.urls', namespace='feedback')),
-    path('api/transfer/', include('transfer_app.urls', namespace='transfer')),
-    path('api/news/', include('news_app.urls', namespace='news_app')),
-    path('api/project/', include('projects_app.urls', namespace='project')),
-    path('api/friends/', include('friends_app.urls', namespace='friends')),
-    path('api/team/', include('team.urls', namespace='team')),
-    path('api/contacts/', include('contacts.urls', namespace='contacts')),
-    path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0),
-         name='schema-swagger-ui'),
+    path("admin/", admin.site.urls),
+    path("api/about-us/", include("about_us_app.urls", namespace="about-us")),
+    path("api/event/", include("events_app.urls", namespace="event")),
+    path("api/feedback/", include("feedback_app.urls", namespace="feedback")),
+    path("api/transfer/", include("transfer_app.urls", namespace="transfer")),
+    path("api/news/", include("news_app.urls", namespace="news_app")),
+    path("api/project/", include("projects_app.urls", namespace="project")),
+    path("api/friends/", include("friends_app.urls", namespace="friends")),
+    path("api/team/", include("team.urls", namespace="team")),
+    path("api/contacts/", include("contacts.urls", namespace="contacts")),
+    path("api/docs/", schema_view.with_ui("swagger", cache_timeout=0),
+         name="schema-swagger-ui"),
 ]
 if settings.DEBUG:
     urlpatterns.extend(

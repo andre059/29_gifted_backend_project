@@ -41,7 +41,7 @@ class News(models.Model):
         verbose_name = "Новость"
         verbose_name_plural = "Новости"
         ordering = [
-            'created_at',
+            "created_at",
             ]
 
     def __str__(self):
@@ -56,7 +56,7 @@ class News(models.Model):
 class NewsImage(models.Model):
     news = models.ForeignKey(
         News,
-        related_name='images',
+        related_name="images",
         on_delete=models.CASCADE,
         verbose_name="Новость",
     )

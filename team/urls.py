@@ -7,9 +7,9 @@ app_name = TeamConfig.name
 router = DefaultRouter()
 
 router.register(
-    r'', DeveloperViewSet,
+    r"", DeveloperViewSet,
     )
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]
