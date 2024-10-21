@@ -29,7 +29,9 @@ def docs_path(instance, filename: str) -> str:
     return f"{instance._meta.app_label}/{instance.__class__.__name__}/{filename}"
 
 
-def char_field_only_limit_digits(name: str, number: int) -> models.CharField:
+def char_field_only_limit_digits(
+        name: str, number: int
+        ) -> models.CharField:
     """
     Создает поле CharField только с цифрами с ограничением по количеству цифр
     """
@@ -50,7 +52,9 @@ def char_field_specific_length_without_valid(name: str, number: int) -> models.C
         max_length=number,
         help_text=f"Текст не более {number} символов",
     )
-def char_field_with_default(name: str, number: int, default: str) -> models.CharField:
+def char_field_with_default(
+        name: str, number: int, default: str
+        ) -> models.CharField:
     """
     Создает поле CharField определенной длины, без валидации
     """
@@ -64,7 +68,7 @@ def char_field_with_default(name: str, number: int, default: str) -> models.Char
 
 def char_field_validator_letters_and_extra(
     name: str, number: int, extra=(), nullable=False
-) -> models.CharField:
+    ) -> models.CharField:
     """
     Создает поле CharField с валидатором: только буквы и символы из extra, исключая остальные символы
     """
@@ -193,7 +197,7 @@ def delete_mediafile_on_delete(sender, instance, **kwargs):
     Удаляет медиафайл с именем переменной link из папки проекта при удалении записи в БД
     """
     # важно!!! все переменные, сохраняющие файл в БД должны иметь имя link
-    if "link" in instance.__class__.__dict__.keys():
+    if "link" in instance.__class__.__dict__.keys() and instance.link:
         # Получаем путь ссылки
         link_path = instance.link.path
         # Проверяем, существует ли файл по указанному пути
