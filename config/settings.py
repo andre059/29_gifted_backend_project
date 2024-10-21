@@ -191,3 +191,4 @@ SITE_URL = os.getenv('GIFTED_29_SITE_URL')
 # Разрешаем загрузку файла со стороны пользователя не более 1 Мб
 IMAGE_AND_DOCS_UPLOAD_SIZE= int(os.getenv('GIFTED_29_IMAGE_AND_DOCS_UPLOAD_SIZE')) 
 VIDEO_UPLOAD_SIZE= int(os.getenv('GIFTED_29_VIDEO_UPLOAD_SIZE'))
+PHONENUMBER_DEFAULT_REGION = 'RU'

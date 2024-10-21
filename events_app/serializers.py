@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Event, EventPhoto, EventVideo, EventLinkVideo, Registration
+from config.services import fix_phone
 
 
 class EventPhotoSerializer(serializers.ModelSerializer):
@@ -20,25 +21,26 @@ class EventLinkVideoSerializer(serializers.ModelSerializer):
 
 
 class EventsSerializer(serializers.ModelSerializer):
-    photo = EventPhotoSerializer(
-        many=True, read_only=True,
-        )
-    video = EventVideoSerializer(
-        many=True, read_only=True,
-        )
-    link_video = EventLinkVideoSerializer(
-        many=True, read_only=True,
-        )
+    photo = EventPhotoSerializer(many=True)
+    video = EventVideoSerializer(many=True)
+    link_video = EventLinkVideoSerializer(many=True)
 
     class Meta:
         model = Event
-        fields = "__all__"
+        fields = (
+            "name_of_event", "description_of_event",
+            "address_of_event", "date_time_of_event", "end_of_event",
+            "photo", "video", "link_video",
+        )
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
     event = serializers.PrimaryKeyRelatedField(
         queryset=Event.objects.all(), required=True,
         )
+    def validate_phone(self, value):
+        return fix_phone(value)
+    
 
     class Meta:
         model = Registration

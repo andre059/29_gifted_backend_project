@@ -12,12 +12,14 @@ class EventsAPIView(viewsets.ModelViewSet):
     """ API view for events """
     queryset = Event.objects.all()
     serializer_class = EventsSerializer
+    http_method_names = ['get']
 
 
 class RegistrationsAPIView(viewsets.ModelViewSet):
     """ API for registration """
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
+    http_method_names = ['get', 'post']
 
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
