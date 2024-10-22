@@ -8,13 +8,13 @@ from .serializers import (
 
 
 class FriendViewSet(viewsets.ModelViewSet):
-    queryset = Friend.objects.all()
+    queryset = Friend.objects.filter(is_published=True)
     serializer_class = FriendSerializer
     http_method_names = ["get"]
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
-    queryset = Company.objects.all()
+    queryset = Company.objects.filter(is_published=True)
     serializer_class = CompanySerializer
     http_method_names = ["get"]
 

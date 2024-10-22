@@ -41,23 +41,6 @@ class NewsAdminForm(forms.ModelForm):
              "content", "video",
              ]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._add_help_text()
-
-    def _add_help_text(self):
-        help_texts = {
-            "created_at": "Введите дату и время создания.",
-            "title": "Введите заголовок новости.",
-            "short_description": "Введите краткое описание новости.",
-            "content": "Введите полный текст новости.",
-            "video": "Вставьте ссылку на видео."
-        }
-        for field_name, help_text in help_texts.items():
-            if field_name in self.fields:
-                self.fields[field_name].help_text = help_text
-
-
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
     form = NewsAdminForm

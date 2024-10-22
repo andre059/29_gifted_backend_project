@@ -308,6 +308,8 @@ def url_field(name: str, nullable=False) -> models.URLField:
     return models.URLField(
         verbose_name=name,
         **nullable,
+        max_length=255,
+        help_text="Введите ссылку, не более 255 символов",
     )
 
 def decimal_field(name: str, max_digits: int = 10, decimal_places: int = 2) -> models.DecimalField:

@@ -21,11 +21,11 @@ class News(models.Model):
 
     title = char_field_specific_length_without_valid(
         name="Заголовок",
-        number=300
+        number=255
     )
     content = text_field_specific_length(
         name="Содержание",
-        number=1300,
+        number=1000,
     )
     video = url_field(
         name="Видео",
@@ -69,15 +69,3 @@ class NewsImage(models.Model):
     def __str__(self):
         return f"Изображение: {self.news.title}"
     
-@receiver(post_delete, sender=News)
-@receiver(post_delete, sender=NewsImage)
-def delete_media_on_delete(sender, instance, **kwargs):
-    if isinstance(instance, News):
-        for image in instance.images.all():
-            delete_mediafile_on_delete(
-                sender=NewsImage, instance=image, **kwargs,
-                )
-    elif isinstance(instance, NewsImage):
-        delete_mediafile_on_delete(
-            sender=NewsImage, instance=instance, **kwargs,
-            )
