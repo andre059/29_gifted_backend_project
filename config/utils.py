@@ -276,13 +276,13 @@ def datetime_field(name: str, auto_now_add=False, auto_now=False) -> models.Date
     )
 
 
-def boolean_field(name: str, default: bool = False, help_text: str = None) -> models.BooleanField:
+def boolean_field(name: str, default: bool = True, help_text: str = None) -> models.BooleanField:
     """
     Создает поле BooleanField
     """
     return models.BooleanField(
         verbose_name=name,
-        default=False,
+        default=default,
         help_text=help_text,
     )
 
