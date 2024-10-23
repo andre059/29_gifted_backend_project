@@ -1,4 +1,17 @@
 services:
+  gifted_29_redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+  gifted_29_celery_worker:
+    build:
+      context: .
+    command: celery -A config worker -l info
+    depends_on:
+      - gifted_29_redis
+      - gifted_29_db
+      
   gifted_29_db:
     image: postgres:latest
     container_name: gifted_29_db
@@ -24,3 +37,5 @@ services:
       - DATABASE_URL=postgres://${GIFTED_29_DB_USER}:${GIFTED_29_DB_PASS}@${GIFTED_29_DB_HOST}:${GIFTED_29_DB_PORT}/${GIFTED_29_DB_NAME}
     depends_on:
       - gifted_29_db
+      - gifted_29_redis
+      - gifted_29_celery_worker

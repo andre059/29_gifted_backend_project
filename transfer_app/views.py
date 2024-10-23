@@ -50,12 +50,11 @@ class PaymentProcessingView(APIView):
 
     def post(self, request: Request):
         try:
-            payment = set_payment_status(request)
+            create_task = set_payment_status(request)
             return Response(
-                {"payment_id": payment.payment_id, 
-                 "payment_status": payment.status}, 
-                 status=status.HTTP_200_OK,
-                 )
+                create_task, 
+                status=status.HTTP_200_OK,
+                )
         except ValidationError as e:
             return Response(
                 {"error": str(e)}, 
