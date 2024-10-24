@@ -9,14 +9,12 @@ from .serializers import EventsSerializer, RegistrationSerializer
 
 
 class EventsAPIView(viewsets.ModelViewSet):
-    """ API view for events """
     queryset = Event.objects.all()
     serializer_class = EventsSerializer
     http_method_names = ["get"]
 
 
 class RegistrationsAPIView(viewsets.ModelViewSet):
-    """ API for registration """
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
     http_method_names = ["get", "post"]
@@ -48,7 +46,6 @@ class RegistrationsAPIView(viewsets.ModelViewSet):
 
     @classmethod
     def send_registration_email(cls, registration):
-        """ Send registration email """
 
         subject = f"Регистрация на мероприятие: {registration.event.name_of_event}"
         message = f"Заявка на регистрацию от {registration.first_name} {registration.last_name}\n\n" \

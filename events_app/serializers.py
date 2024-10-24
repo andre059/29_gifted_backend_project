@@ -27,11 +27,7 @@ class EventsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = (
-            "name_of_event", "description_of_event",
-            "address_of_event", "date_time_of_event", "end_of_event",
-            "photo", "video", "link_video",
-        )
+        fields = "__all__"
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

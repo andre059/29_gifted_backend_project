@@ -11,19 +11,19 @@ from .serializers import (
 
 
 class TeamMemberViewSet(viewsets.ModelViewSet):
-    queryset = TeamMember.objects.all()
+    queryset = TeamMember.objects.filter(is_published=True)
     serializer_class = TeamMemberSerializer
     http_method_names = ["get"]
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
-    queryset = Document.objects.all()
+    queryset = Document.objects.filter(is_published=True)
     serializer_class = DocumentSerializer
     http_method_names = ["get"]
 
 
 class OrganizationDetailViewSet(viewsets.ModelViewSet):
-    queryset = OrganizationDetail.objects.all()
+    queryset = OrganizationDetail.objects.filter(is_published=True)
     serializer_class = OrganizationDetailSerializer
     http_method_names = ["get"]
 
@@ -31,9 +31,9 @@ class OrganizationDetailViewSet(viewsets.ModelViewSet):
 class CombinedDataView(APIView):
     http_method_names = ["get"]
     def get(self, request, *args, **kwargs):
-        teams = TeamMember.objects.all()
-        docs = Document.objects.all()
-        orgs = OrganizationDetail.objects.all()
+        teams = TeamMember.objects.filter(is_published=True)
+        docs = Document.objects.filter(is_published=True)
+        orgs = OrganizationDetail.objects.filter(is_published=True)
 
         data = {
             "team": TeamMemberSerializer(teams, many=True).data,

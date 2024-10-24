@@ -1,15 +1,11 @@
 from yookassa import Payment
-import time
-
 from config.settings import SITE_URL
 from django.core.exceptions import ValidationError
-from rest_framework.request import Request
-from transfer_app.models import PaymentModel
-from rest_framework.exceptions import APIException
-
-
+from .tasks import update_payment_status_task
+from datetime import datetime, timedelta
 
 def create_payment(amount: int, description: str):
+    expires_at = (datetime.now() + timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%S+00:00")
     payment_data = {
         "amount": {
             "value": amount,
@@ -20,30 +16,17 @@ def create_payment(amount: int, description: str):
             "return_url": f"http://{SITE_URL}"
         },
         "capture": True,
-        "description": description
+        "description": description,
+        "expires_at": expires_at,
     }
     payment = Payment.create(payment_data)
     return payment
 
-def set_payment_status(request: Request):
-    try:
-        payment_id = request.data.get("payment_id")
-        if not payment_id:
-            raise ValidationError("Требуется идентификатор платежа")
+def set_payment_status(request):
+    payment_id = request.data.get("payment_id")
+    
+    if not payment_id:
+        raise ValidationError("Требуется идентификатор платежа")
+    task = update_payment_status_task.apply_async((payment_id,), countdown=600)
 
-        payment_db = PaymentModel.objects.get(payment_id=payment_id)
-        time.sleep(660)
-        
-        payment_yookassa = Payment.find_one(payment_id)
-        if not payment_yookassa:
-            raise APIException("Платеж не найден", code="payment_not_found")
-        
-        payment_status = payment_yookassa.status
-        
-        payment_db.status = payment_status
-        payment_db.save()
-
-        return payment_db
-
-    except PaymentModel.DoesNotExist as e:
-        raise APIException("Платеж не найден", code="payment_not_found")
+    return {"message": "Задача обновления статуса запущена, обновится через 10 минут", "task_id": task.id}
