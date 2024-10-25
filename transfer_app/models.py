@@ -11,7 +11,7 @@ from config.utils import (
 
 
 class PaymentModel(models.Model):
-    name = name = char_field_validator_letters_and_extra("Имя", 100, ("-",))
+    name = char_field_validator_letters_and_extra("Имя", 100, ("-",))
     last_name = char_field_validator_letters_and_extra("Фамилия", 100, ("-",))
     phone = phone_number_field("Телефон")
     email = email_field("Электронная почта")

@@ -10,20 +10,18 @@ from rest_framework.request import Request
 
 
 class PaymentFormView(APIView):
-
     serializer_class = PaymentSerializer
     http_method_names = ["post"]
-
 
     def post(self, request: Request):
         serializer = PaymentSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
             payment = create_payment(
-                data["transfer_amount"], 
+                data["transfer_amount"],
                 data["comment"],
-                )
-            
+            )
+
             PaymentModel.objects.create(
                 payment_id=payment.id,
                 name=data["name"],
@@ -35,14 +33,14 @@ class PaymentFormView(APIView):
             )
 
             return Response(
-                {"payment_url": payment.confirmation.confirmation_url, 
-                 "payment_id": payment.id}, 
-                 status=status.HTTP_200_OK,
-                 )
-        return Response(
-            serializer.errors, 
-            status=status.HTTP_400_BAD_REQUEST,
+                {"payment_url": payment.confirmation.confirmation_url,
+                 "payment_id": payment.id},
+                status=status.HTTP_200_OK,
             )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 class PaymentProcessingView(APIView):
@@ -52,11 +50,11 @@ class PaymentProcessingView(APIView):
         try:
             create_task = set_payment_status(request)
             return Response(
-                create_task, 
+                create_task,
                 status=status.HTTP_200_OK,
-                )
+            )
         except ValidationError as e:
             return Response(
-                {"error": str(e)}, 
+                {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
-                )
+            )

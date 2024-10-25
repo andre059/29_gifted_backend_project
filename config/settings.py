@@ -119,6 +119,8 @@ REST_FRAMEWORK = {
 }
 
 ADMIN_PASS = os.getenv("GIFTED_29_ADMIN_PASS")
+ADMIN_USERNAME = os.getenv("GIFTED_29_ADMIN_USERNAME")
+ADMIN_EMAIL = os.getenv("GIFTED_29_ADMIN_EMAIL")
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.getenv("GIFTED_29_EMAIL_HOST")
 EMAIL_PORT = 465

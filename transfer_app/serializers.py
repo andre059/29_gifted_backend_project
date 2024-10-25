@@ -7,18 +7,19 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentModel
         fields = [
-            "name", "last_name", "phone", 
+            "name", "last_name", "phone",
             "email", "transfer_amount", "comment",
-            ]
+        ]
+
     def validate_phone(self, value):
         return fix_phone(value)
 
     def validate(self, data):
-        
+
         required_fields = [
-            "name", "last_name", "phone", 
+            "name", "last_name", "phone",
             "email", "transfer_amount", "comment",
-            ]
+        ]
         for field in required_fields:
             if field not in data:
                 raise serializers.ValidationError(f"Обязательное поле '{field}' отсутствует.")
