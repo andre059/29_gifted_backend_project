@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from .tasks import update_payment_status_task
 from datetime import datetime, timedelta
 
+
 def create_payment(amount: int, description: str):
     expires_at = (datetime.now() + timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%S+00:00")
     payment_data = {
@@ -22,9 +23,10 @@ def create_payment(amount: int, description: str):
     payment = Payment.create(payment_data)
     return payment
 
+
 def set_payment_status(request):
     payment_id = request.data.get("payment_id")
-    
+
     if not payment_id:
         raise ValidationError("Требуется идентификатор платежа")
     task = update_payment_status_task.apply_async((payment_id,), countdown=600)
