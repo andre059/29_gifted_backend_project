@@ -118,6 +118,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema"
 }
 
+ADMIN_PASS = os.getenv("GIFTED_29_ADMIN_PASS")
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.getenv("GIFTED_29_EMAIL_HOST")
 EMAIL_PORT = 465
