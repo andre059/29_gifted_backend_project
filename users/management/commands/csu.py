@@ -1,14 +1,14 @@
 from django.core.management import BaseCommand
 from users.models import User
-from config.settings import ADMIN_PASS
+from config.settings import ADMIN_PASS, ADMIN_EMAIL, ADMIN_USERNAME
 
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
         user, created = User.objects.get_or_create(
-            username="Admin",
+            username=ADMIN_USERNAME,
             defaults={
-                "email": "admin@gmail.com",
+                "email": ADMIN_EMAIL,
                 "is_active": True,
                 "is_staff": True,
                 "is_superuser": True,
