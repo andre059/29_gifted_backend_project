@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 from users.models import User
-
+from config.settings import ADMIN_PASS
 
 class Command(BaseCommand):
 
@@ -16,7 +16,7 @@ class Command(BaseCommand):
         )
 
         if created:
-            user.set_password("zxc123qwe789")
+            user.set_password(ADMIN_PASS)
             user.save()
             self.stdout.write("Admin created")
         else:
