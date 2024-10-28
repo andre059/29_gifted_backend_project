@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: ${GIFTED_29_DB_PASS}
       POSTGRES_DB: ${GIFTED_29_DB_NAME}
     volumes:
-      - ${GIFTED_29_DB_VOLUME}:/var/lib/postgresql/data
+      - ${GIFTED_29_DB_VOLUME}:/var/lib/postgresql/data/pgdata
 
   gifted_29_django_app:
     build:
@@ -39,3 +39,21 @@ services:
       - gifted_29_db
       - gifted_29_redis
       - gifted_29_celery_worker
+    logging:
+      driver: loki
+      options:
+        # loki-url: http://localhost:3100/loki/api/v1/push
+        loki-url: http://host.docker.internal:3100/loki/api/v1/push
+
+  grafana:
+    image: grafana/grafana:9.2.15
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    ports:
+    - "3001:3000"
+  loki:
+    image: grafana/loki:2.8.0
+    ports:
+    - "3100:3100"
+
