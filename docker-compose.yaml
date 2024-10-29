@@ -3,6 +3,8 @@ services:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+    networks:
+      - gifted_29_local_network
 
   gifted_29_celery_worker:
     build:
@@ -11,6 +13,8 @@ services:
     depends_on:
       - gifted_29_redis
       - gifted_29_db
+    networks:
+      - gifted_29_local_network
       
   gifted_29_db:
     image: postgres:latest
@@ -23,6 +27,8 @@ services:
       POSTGRES_DB: ${GIFTED_29_DB_NAME}
     volumes:
       - ${GIFTED_29_DB_VOLUME}:/var/lib/postgresql/data/pgdata
+    networks:
+      - gifted_29_local_network
 
   gifted_29_django_app:
     build:
@@ -42,8 +48,11 @@ services:
     logging:
       driver: loki
       options:
-        # loki-url: http://localhost:3100/loki/api/v1/push
         loki-url: http://host.docker.internal:3100/loki/api/v1/push
+    networks:
+      - gifted_29_local_network
+      - default
+
 
   grafana:
     image: grafana/grafana:9.2.15
@@ -56,4 +65,12 @@ services:
     image: grafana/loki:2.8.0
     ports:
     - "3100:3100"
-
+    networks:
+      - gifted_29_local_network
+  
+networks:
+  default:
+    name: nginx_network
+    external: true
+  gifted_29_local_network:
+    name: gifted_29_network
