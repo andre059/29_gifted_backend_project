@@ -45,29 +45,9 @@ services:
       - gifted_29_db
       - gifted_29_redis
       - gifted_29_celery_worker
-    logging:
-      driver: loki
-      options:
-        loki-url: http://host.docker.internal:3100/loki/api/v1/push
     networks:
       - gifted_29_local_network
       - default
-
-
-  grafana:
-    image: grafana/grafana:9.2.15
-    environment:
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-    ports:
-    - "3001:3000"
-  loki:
-    image: grafana/loki:2.8.0
-    ports:
-    - "3100:3100"
-    networks:
-      - gifted_29_local_network
-  
 networks:
   default:
     name: nginx_network
