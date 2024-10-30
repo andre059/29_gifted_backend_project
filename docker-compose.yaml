@@ -44,14 +44,17 @@ services:
     container_name: gifted_29_django_app
     volumes:
       - ${GIFTED_29_APP_VOLUME}:/app
-    command: bash -c "sleep 10 && python manage.py migrate && python manage.py csu && python manage.py team_create && python manage.py runserver 0.0.0.0:${GIFTED_29_APP_PORT}"
+    command: |
+      bash -c "
+        sleep 10 && \
+        python manage.py migrate && \
+        python manage.py csu && \
+        python manage.py team_create && \
+        python manage.py runserver 0.0.0.0:${GIFTED_29_APP_PORT}"
     expose:
       - '${GIFTED_29_APP_PORT}:5432'
     ports:
       - ${GIFTED_29_APP_PORT}:8000
-    # environment:
-    #   - DJANGO_SETTINGS_MODULE=config.settings
-    #   - DATABASE_URL=postgres://${GIFTED_29_DB_USER}:${GIFTED_29_DB_PASS}@${GIFTED_29_DB_HOST}:${GIFTED_29_DB_PORT}/${GIFTED_29_DB_NAME}
     restart: always
     depends_on:
       - gifted_29_db
