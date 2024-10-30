@@ -11,15 +11,21 @@ RUN apt-get update \
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY wait-for-it.sh /app/wait-for-it.sh
-RUN chmod +x /app/wait-for-it.sh
+# COPY wait-for-it.sh /app/wait-for-it.sh
+# RUN chmod +x /app/wait-for-it.sh
 
 COPY . .
 
 EXPOSE 8000
-CMD ["./wait-for-it.sh", "gifted_29_db:5432", "--", \
-    "sh", "-c", "\
+CMD ["sh", "-c", "\
+    sleep 10 && \
     python manage.py migrate && \
     python manage.py csu && \
     python manage.py team_create && \
-    python manage.py runserver 0.0.0.0:8000"]
+    python manage.py runserver 0.0.0.0:${GIFTED_29_APP_PORT}"]
+# CMD ["./wait-for-it.sh", "${GIFTED_29_DB_HOST}:${GIFTED_29_DB_PORT}", "--", \
+#     "sh", "-c", "\
+#     python manage.py migrate && \
+#     python manage.py csu && \
+#     python manage.py team_create && \
+#     python manage.py runserver 0.0.0.0:${GIFTED_29_APP_PORT}"]
