@@ -7,18 +7,22 @@ services:
       - gifted_29_local_network
 
   gifted_29_celery_worker:
-    build:
-      context: .
+    build: .
     command: celery -A config worker -l info
     depends_on:
       - gifted_29_redis
       - gifted_29_db
+      - gifted_29_django_app
     networks:
       - gifted_29_local_network
       
   gifted_29_db:
     image: postgres:latest
-    container_name: gifted_29_db
+    env_file: .env
+    container_name: ${GIFTED_29_DB_HOST}
+    restart: on-failure
+    expose:
+      - '${GIFTED_29_DB_PORT}:5432'
     ports:
       - "${GIFTED_29_DB_PORT}:5432"
     environment:
@@ -26,25 +30,33 @@ services:
       POSTGRES_PASSWORD: ${GIFTED_29_DB_PASS}
       POSTGRES_DB: ${GIFTED_29_DB_NAME}
     volumes:
-      - ${GIFTED_29_DB_VOLUME}:/var/lib/postgresql/data/pgdata
+      - ${GIFTED_29_DB_VOLUME}:/var/lib/postgresql/data
     networks:
       - gifted_29_local_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d ${GIFTED_29_DB_NAME} -U ${GIFTED_29_DB_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   gifted_29_django_app:
-    build:
-      context: .
+    build: .
     container_name: gifted_29_django_app
     volumes:
       - ${GIFTED_29_APP_VOLUME}:/app
+    command: |
+      bash -c "
+        sleep 10 && \
+        python manage.py migrate && \
+        python manage.py csu && \
+        python manage.py team_create && \
+        python manage.py runserver 0.0.0.0:${GIFTED_29_APP_PORT}"
     ports:
       - ${GIFTED_29_APP_PORT}:8000
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings
-      - DATABASE_URL=postgres://${GIFTED_29_DB_USER}:${GIFTED_29_DB_PASS}@${GIFTED_29_DB_HOST}:${GIFTED_29_DB_PORT}/${GIFTED_29_DB_NAME}
+    restart: always
     depends_on:
       - gifted_29_db
       - gifted_29_redis
-      - gifted_29_celery_worker
     networks:
       - gifted_29_local_network
       - default
