@@ -17,7 +17,7 @@ RUN chmod +x /app/wait-for-it.sh
 COPY . .
 
 EXPOSE 8000
-CMD ["app/wait-for-it.sh", "${GIFTED_29_DB_HOST}:${GIFTED_29_DB_PORT}", "--", \
+CMD ["wait-for-it.sh", "${GIFTED_29_DB_HOST}:${GIFTED_29_DB_PORT}", "--", \
     "sh", "-c", "\
     python manage.py migrate && \
     python manage.py csu && \
