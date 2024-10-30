@@ -12,6 +12,7 @@ services:
     depends_on:
       - gifted_29_redis
       - gifted_29_db
+      - gifted_29_django_app
     networks:
       - gifted_29_local_network
       
@@ -50,21 +51,18 @@ services:
         python manage.py csu && \
         python manage.py team_create && \
         python manage.py runserver 0.0.0.0:${GIFTED_29_APP_PORT}"
-    expose:
-      - "${GIFTED_29_APP_PORT}:5432"
     ports:
       - ${GIFTED_29_APP_PORT}:8000
     restart: always
     depends_on:
       - gifted_29_db
       - gifted_29_redis
-      - gifted_29_celery_worker
     networks:
       - gifted_29_local_network
-      # - default
+      - default
 networks:
-  # default:
-  #   name: nginx_network
-  #   external: true
+  default:
+    name: nginx_network
+    external: true
   gifted_29_local_network:
     name: gifted_29_network
