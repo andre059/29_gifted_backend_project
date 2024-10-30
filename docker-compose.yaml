@@ -37,7 +37,7 @@ services:
     volumes:
       - ${GIFTED_29_APP_VOLUME}:/app
     ports:
-      - 8000:8000
+      - ${GIFTED_29_APP_PORT}:8000
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings
       - DATABASE_URL=postgres://${GIFTED_29_DB_USER}:${GIFTED_29_DB_PASS}@${GIFTED_29_DB_HOST}:${GIFTED_29_DB_PORT}/${GIFTED_29_DB_NAME}
