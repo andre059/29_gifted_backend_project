@@ -1,6 +1,7 @@
 services:
   gifted_29_redis:
     image: "redis:alpine"
+    container_name: ${GIFTED_29_REDIS}
     ports:
       - "6379:6379"
     networks:
@@ -8,6 +9,7 @@ services:
 
   gifted_29_celery_worker:
     build: .
+    container_name: ${GIFTED_29_CELERY_WORKER}
     command: celery -A config worker -l info
     depends_on:
       - gifted_29_redis
@@ -41,7 +43,7 @@ services:
 
   gifted_29_django_app:
     build: .
-    container_name: gifted_29_django_app
+    container_name: ${GIFTED_29_APP_HOST}
     volumes:
       - ${GIFTED_29_APP_VOLUME}:/app
     command: |
