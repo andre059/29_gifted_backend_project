@@ -7,8 +7,7 @@ services:
       - gifted_29_local_network
 
   gifted_29_celery_worker:
-    build:
-      context: .
+    build: .
     command: celery -A config worker -l info
     depends_on:
       - gifted_29_redis
@@ -52,7 +51,7 @@ services:
         python manage.py team_create && \
         python manage.py runserver 0.0.0.0:${GIFTED_29_APP_PORT}"
     expose:
-      - '${GIFTED_29_APP_PORT}:5432'
+      - "${GIFTED_29_APP_PORT}:5432"
     ports:
       - ${GIFTED_29_APP_PORT}:8000
     restart: always
@@ -62,10 +61,10 @@ services:
       - gifted_29_celery_worker
     networks:
       - gifted_29_local_network
-      - default
+      # - default
 networks:
-  default:
-    name: nginx_network
-    external: true
+  # default:
+  #   name: nginx_network
+  #   external: true
   gifted_29_local_network:
     name: gifted_29_network
