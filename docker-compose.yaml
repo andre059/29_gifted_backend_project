@@ -54,7 +54,7 @@ services:
         python manage.py runserver 0.0.0.0:8000"
     ports:
       - ${GIFTED_29_APP_PORT}:8000
-    restart: always
+    # restart: always
     depends_on:
       - gifted_29_db
       - gifted_29_redis
