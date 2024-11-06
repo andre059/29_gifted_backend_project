@@ -47,7 +47,6 @@ services:
     volumes:
       - ${GIFTED_29_APP_VOLUME}/media:/app/media
       - ${GIFTED_29_APP_VOLUME}/static:/app/static
-      - ${GIFTED_29_APP_VOLUME}/config:/app/config
     command: |
       bash -c "
         python manage.py migrate && \
