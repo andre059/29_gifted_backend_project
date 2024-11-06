@@ -14,7 +14,7 @@ services:
     depends_on:
       - gifted_29_redis
       - gifted_29_db
-      - gifted_29_django_app
+      # - gifted_29_django_app
     networks:
       - gifted_29_local_network
       
@@ -58,6 +58,7 @@ services:
     depends_on:
       - gifted_29_db
       - gifted_29_redis
+      - gifted_29_celery_worker
     networks:
       - gifted_29_local_network
       - default
