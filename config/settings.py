@@ -14,7 +14,7 @@ sentry_sdk.init(
     profiles_sample_rate=1.0,
 )
 SECRET_KEY = os.environ.get("GIFTED_29_DJANGO_SECRET_KEY")
-DEBUG = os.environ.get("GIFTED_29_DJANGO_DEBUG")
+DEBUG = False # os.environ.get("GIFTED_29_DJANGO_DEBUG")
 
 ALLOWED_HOSTS = [
     "0.0.0.0", "127.0.0.1",
