@@ -26,6 +26,9 @@ CSRF_TRUSTED_ORIGINS = [
     "https://gifted-01.god-it.ru",
     "https://gifted-01-dev.god-it.ru", 
     "https://gifted-01-test.god-it.ru",
+    "http://gifted-01.god-it.ru",
+    "http://gifted-01-dev.god-it.ru", 
+    "http://gifted-01-test.god-it.ru",
      ]
 
 
