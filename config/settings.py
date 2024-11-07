@@ -23,9 +23,9 @@ ALLOWED_HOSTS = [
      ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "0.0.0.0", "127.0.0.1",
-    "localhost", "gifted-01.god-it.ru",
-    "gifted-01-dev.god-it.ru", "gifted-01-test.god-it.ru",
+    "https://gifted-01.god-it.ru",
+    "https://gifted-01-dev.god-it.ru", 
+    "https://gifted-01-test.god-it.ru",
      ]
 
 
