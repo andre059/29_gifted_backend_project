@@ -14,7 +14,7 @@ sentry_sdk.init(
     profiles_sample_rate=1.0,
 )
 SECRET_KEY = os.environ.get("GIFTED_29_DJANGO_SECRET_KEY")
-DEBUG = False # os.environ.get("GIFTED_29_DJANGO_DEBUG")
+DEBUG = True # os.environ.get("GIFTED_29_DJANGO_DEBUG")
 
 ALLOWED_HOSTS = [
     "0.0.0.0", "127.0.0.1",
@@ -119,7 +119,10 @@ LANGUAGE_CODE = "ru-ru"
 TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_TZ = True
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "static", 
+    ]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"
