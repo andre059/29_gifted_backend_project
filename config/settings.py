@@ -16,7 +16,11 @@ sentry_sdk.init(
 SECRET_KEY = os.environ.get("GIFTED_29_DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("GIFTED_29_DJANGO_DEBUG")
 
-ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = [
+    "0.0.0.0", "127.0.0.1",
+    "localhost", "gifted-01.god-it.ru",
+    "gifted-01-dev.god-it.ru", "gifted-01-test.god-it.ru",
+     ]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
