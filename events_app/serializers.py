@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from .models import Event, EventPhoto, EventVideo, EventLinkVideo, Registration
 from config.services import fix_phone
-from config.utils import replace_http_to_https_in_link
 
 
 class EventPhotoSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
-        return replace_http_to_https_in_link(instance)
+        representation = super().to_representation(instance)
+        if instance.link and isinstance(representation.get('link'), str):
+            representation['link'] = representation['link'].replace('http://', 'https://')
+        return representation
     
     class Meta:
         model = EventPhoto
@@ -14,7 +16,10 @@ class EventPhotoSerializer(serializers.ModelSerializer):
 
 class EventVideoSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
-        return replace_http_to_https_in_link(instance)
+        representation = super().to_representation(instance)
+        if instance.link and isinstance(representation.get('link'), str):
+            representation['link'] = representation['link'].replace('http://', 'https://')
+        return representation
     
     class Meta:
         model = EventVideo
