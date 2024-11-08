@@ -263,8 +263,6 @@ def email_field_validation(name: str) -> models.EmailField:
     )
 
 
-
-
 def datetime_field(name: str, auto_now_add=False, auto_now=False) -> models.DateTimeField:
     """
     Создает поле DateTimeField
@@ -321,3 +319,8 @@ def decimal_field(name: str, max_digits: int = 10, decimal_places: int = 2) -> m
         max_digits=max_digits,
         decimal_places=decimal_places
     )
+def replace_http_to_https_in_link(instance):
+    representation = super().to_representation(instance)
+    if instance.link:
+        representation['link'] = representation['link'].replace('http://', 'https://')
+    return representation

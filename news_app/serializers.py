@@ -1,12 +1,12 @@
 from rest_framework import serializers
+from config.utils import replace_http_to_https_in_link
 from .models import News, NewsImage
 
 class NewsImageSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['link'] = representation['link'].replace('http://', 'https://')
-        return representation
+        return replace_http_to_https_in_link(instance)
+
     class Meta:
         model = NewsImage
         fields = "__all__"

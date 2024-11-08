@@ -28,7 +28,7 @@ class Command(BaseCommand):
                 continue
 
             
-            role = ' '.join(role_dir.split("_"))
+            role = role_dir.replace("_", " ")
 
             
             for filename in os.listdir(role_path): 
