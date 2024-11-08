@@ -52,7 +52,8 @@ services:
         python manage.py csu && \
         python manage.py team_create && \
         python manage.py collectstatic --no-input && \
-        python manage.py runserver 0.0.0.0:8000"
+        gunicorn -b 0.0.0.0:8000 config.wsgi:application"
+        
     ports:
       - ${GIFTED_29_APP_PORT}:8000
     restart: always
