@@ -11,7 +11,7 @@ from rest_framework.request import Request
 
 class PaymentFormView(APIView):
     serializer_class = PaymentSerializer
-    http_method_names = ["post"]
+    http_method_names = ["get", "post"]
 
     def post(self, request: Request):
         serializer = PaymentSerializer(data=request.data)
@@ -44,7 +44,7 @@ class PaymentFormView(APIView):
 
 
 class PaymentProcessingView(APIView):
-    http_method_names = ["post"]
+    http_method_names = ["get", "post"]
 
     def post(self, request: Request):
         try:
