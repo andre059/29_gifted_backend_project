@@ -14,7 +14,7 @@ def create_payment(amount: int, description: str):
         },
         "confirmation": {
             "type": "redirect",
-            "return_url": f"http://{SITE_URL}"
+            "return_url": f"{SITE_URL}"
         },
         "capture": True,
         "description": description,

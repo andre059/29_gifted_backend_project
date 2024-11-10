@@ -9,9 +9,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         base_dir = "team_photo/"  
         folders = [
-            "Backend Team Lead", "Frontend Team Lead", 
-            "Backend Developer", "Frontend Developer", 
-            "Project Manager", "Software Test Engineer",
+            "Backend_Team_Lead", "Frontend_Team_Lead", 
+            "Backend_Developer", "Frontend_Developer", 
+            "Project_Manager", "Software_Test_Engineer",
             ]
 
         
@@ -28,7 +28,7 @@ class Command(BaseCommand):
                 continue
 
             
-            role = f"{role_dir}"
+            role = role_dir.replace("_", " ")
 
             
             for filename in os.listdir(role_path): 

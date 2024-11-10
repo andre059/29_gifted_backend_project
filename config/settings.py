@@ -16,7 +16,20 @@ sentry_sdk.init(
 SECRET_KEY = os.environ.get("GIFTED_29_DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("GIFTED_29_DJANGO_DEBUG")
 
-ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = [
+    "0.0.0.0", "127.0.0.1",
+    "localhost", "gifted-01.god-it.ru",
+    "gifted-01-dev.god-it.ru", "gifted-01-test.god-it.ru",
+     ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://gifted-01.god-it.ru",
+    "https://gifted-01-dev.god-it.ru", 
+    "https://gifted-01-test.god-it.ru",
+    "http://gifted-01.god-it.ru",
+    "http://gifted-01-dev.god-it.ru", 
+    "http://gifted-01-test.god-it.ru",
+     ]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -81,7 +94,7 @@ DATABASES = {
         "USER": os.environ.get("GIFTED_29_DB_USER"),
         "PASSWORD": os.environ.get("GIFTED_29_DB_PASS"),
         "HOST": os.environ.get("GIFTED_29_DB_HOST"),
-        "PORT": os.environ.get("GIFTED_29_DB_PORT"),
+        "PORT": 5432,
     }
 
 }
@@ -105,8 +118,8 @@ LANGUAGE_CODE = "ru-ru"
 TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_TZ = True
-STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "static"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"
 MEDIA_URL = "/media/"

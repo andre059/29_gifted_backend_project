@@ -8,7 +8,6 @@ from config.utils import char_field_specific_length_without_valid, char_field_ad
     text_field_validation, datetime_field, boolean_field, phone_number_field, image_field, video_field, url_field
 
 
-
 class Event(models.Model):
 
     name_of_event = char_field_specific_length_without_valid("Название мероприятия", 300,)

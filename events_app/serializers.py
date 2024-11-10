@@ -4,11 +4,23 @@ from config.services import fix_phone
 
 
 class EventPhotoSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.link and isinstance(representation.get('link'), str):
+            representation['link'] = representation['link'].replace('http://', 'https://')
+        return representation
+    
     class Meta:
         model = EventPhoto
         fields = "__all__"
 
 class EventVideoSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.link and isinstance(representation.get('link'), str):
+            representation['link'] = representation['link'].replace('http://', 'https://')
+        return representation
+    
     class Meta:
         model = EventVideo
         fields = "__all__"

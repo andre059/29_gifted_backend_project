@@ -263,8 +263,6 @@ def email_field_validation(name: str) -> models.EmailField:
     )
 
 
-
-
 def datetime_field(name: str, auto_now_add=False, auto_now=False) -> models.DateTimeField:
     """
     Создает поле DateTimeField

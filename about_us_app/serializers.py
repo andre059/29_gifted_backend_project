@@ -3,18 +3,36 @@ from .models import TeamMember, Document, OrganizationDetail
 
 
 class TeamMemberSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.link and isinstance(representation.get('link'), str):
+            representation['link'] = representation['link'].replace('http://', 'https://')
+        return representation
+    
     class Meta:
         model = TeamMember
         fields = "__all__"
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.link and isinstance(representation.get('link'), str):
+            representation['link'] = representation['link'].replace('http://', 'https://')
+        return representation
+    
     class Meta:
         model = Document
         fields = "__all__"
 
 
 class OrganizationDetailSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.link and isinstance(representation.get('link'), str):
+            representation['link'] = representation['link'].replace('http://', 'https://')
+        return representation
+    
     class Meta:
         model = OrganizationDetail
         fields = "__all__"

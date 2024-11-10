@@ -14,7 +14,6 @@ services:
     depends_on:
       - gifted_29_redis
       - gifted_29_db
-      - gifted_29_django_app
     networks:
       - gifted_29_local_network
       
@@ -45,19 +44,23 @@ services:
     build: .
     container_name: ${GIFTED_29_APP_HOST}
     volumes:
-      - ${GIFTED_29_APP_VOLUME}:/app
+      - ${GIFTED_29_APP_VOLUME}/media:/app/media
+      - ${GIFTED_29_APP_VOLUME}/static:/app/static
     command: |
       bash -c "
         python manage.py migrate && \
         python manage.py csu && \
         python manage.py team_create && \
-        python manage.py runserver 0.0.0.0:8000"
+        python manage.py collectstatic --no-input && \
+        gunicorn -b 0.0.0.0:8000 config.wsgi:application"
+        
     ports:
       - ${GIFTED_29_APP_PORT}:8000
     restart: always
     depends_on:
       - gifted_29_db
       - gifted_29_redis
+      - gifted_29_celery_worker
     networks:
       - gifted_29_local_network
       - default
