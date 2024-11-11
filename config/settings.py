@@ -31,6 +31,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://gifted-01-test.god-it.ru",
      ]
 
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
