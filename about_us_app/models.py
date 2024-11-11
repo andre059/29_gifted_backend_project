@@ -59,6 +59,23 @@ class Document(Abstract):
 
     def __str__(self):
         return f"{self.name}"
+    
+
+class UserAgreement(Abstract):
+    name = char_field_specific_length_without_valid("Пользовательское соглашение", 255)
+    link = file_field("Пользовательское соглашение")
+
+    def save(self, *args, **kwargs):
+        if not self.pk and UserAgreement.objects.exists():
+            return
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Пользовательское соглашение"
+        verbose_name_plural = "Пользовательское соглашение"
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 class OrganizationDetail(Abstract):

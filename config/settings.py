@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
     "users",
     "about_us_app",
+    "assistance_form_app",
     "events_app",
     "friends_app",
     "news_app",

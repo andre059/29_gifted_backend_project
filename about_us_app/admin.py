@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TeamMember, Document, OrganizationDetail
+from .models import TeamMember, Document, OrganizationDetail, UserAgreement
 
 
 @admin.register(TeamMember)
@@ -20,6 +20,25 @@ class DocumentAdmin(admin.ModelAdmin):
     search_fields = (
         "name",
         )
+    
+
+@admin.register(UserAgreement)
+class UserAgreementAdmin(admin.ModelAdmin):
+    list_display = (
+        "name", "link", "is_published",
+        )
+    search_fields = (
+        "name",
+        )
+    def has_add_permission(self, request):
+        if UserAgreement.objects.exists():
+            return False
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        if UserAgreement.objects.exists():
+            return False
+        return super().has_delete_permission(request, obj)
 
 
 @admin.register(OrganizationDetail)
