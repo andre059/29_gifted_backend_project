@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Developer
 
+
 class DeveloperSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
