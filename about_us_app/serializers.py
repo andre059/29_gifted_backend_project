@@ -17,8 +17,8 @@ class TeamMemberSerializer(serializers.ModelSerializer):
 class DocumentSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        if instance.link:
-            representation['link'] = self.replace_http_with_https(representation['link'])
+        if instance.link and isinstance(representation.get('link'), str):
+            representation['link'] = representation['link'].replace('http://', 'https://')
         return representation
     
     class Meta:
@@ -29,8 +29,8 @@ class DocumentSerializer(serializers.ModelSerializer):
 class OrganizationDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        if instance.link:
-            representation['link'] = self.replace_http_with_https(representation['link'])
+        if instance.link and isinstance(representation.get('link'), str):
+            representation['link'] = representation['link'].replace('http://', 'https://')
         return representation
     
     class Meta:
