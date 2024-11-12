@@ -1,12 +1,13 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import TeamMember, Document, OrganizationDetail
+from .models import TeamMember, Document, OrganizationDetail, UserAgreement
 from .serializers import (
     TeamMemberSerializer,
     DocumentSerializer,
     OrganizationDetailSerializer,
     CombinedSerializer,
+    UserAgreementSerializer
 )
 
 
@@ -19,6 +20,12 @@ class TeamMemberViewSet(viewsets.ModelViewSet):
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.filter(is_published=True)
     serializer_class = DocumentSerializer
+    http_method_names = ["get"]
+
+
+class UserAgreementViewSet(viewsets.ModelViewSet):
+    queryset = UserAgreement.objects.filter(is_published=True)
+    serializer_class = UserAgreementSerializer
     http_method_names = ["get"]
 
 

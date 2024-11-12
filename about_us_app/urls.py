@@ -6,6 +6,7 @@ from .views import (
     DocumentViewSet,
     OrganizationDetailViewSet,
     CombinedDataView,
+    UserAgreementViewSet
 )
 
 app_name = AboutUsAppConfig.name
@@ -14,6 +15,7 @@ router = DefaultRouter()
 router.register(r"team", TeamMemberViewSet)
 router.register(r"doc", DocumentViewSet)
 router.register(r"org", OrganizationDetailViewSet)
+router.register(r"agreement", UserAgreementViewSet)
 
 urlpatterns = [
     path("separate/", include(router.urls)),

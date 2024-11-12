@@ -2,6 +2,8 @@ services:
   gifted_29_redis:
     image: "redis:alpine"
     container_name: ${GIFTED_29_REDIS}
+    volumes:
+      - ${GIFTED_29_REDIS_VOLUME}:/app/data
     ports:
       - "6379:6379"
     networks:

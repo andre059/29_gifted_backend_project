@@ -29,6 +29,12 @@ CSRF_TRUSTED_ORIGINS = [
     "http://gifted-01.god-it.ru",
     "http://gifted-01-dev.god-it.ru", 
     "http://gifted-01-test.god-it.ru",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+    "http://0.0.0.0:8000",
+    "https://127.0.0.1:8000",
+    "https://localhost:8000",
+    "https://0.0.0.0:8000",
      ]
 
 
@@ -46,6 +52,7 @@ INSTALLED_APPS = [
 
     "users",
     "about_us_app",
+    "assistance_form_app",
     "events_app",
     "friends_app",
     "news_app",
