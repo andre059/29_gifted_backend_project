@@ -3,11 +3,6 @@ from .models import TeamMember, Document, OrganizationDetail, UserAgreement
 
 
 class TeamMemberSerializer(serializers.ModelSerializer):
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.link and isinstance(representation.get('link'), str):
-            representation['link'] = representation['link'].replace('http://', 'https://')
-        return representation
     
     class Meta:
         model = TeamMember
@@ -15,22 +10,13 @@ class TeamMemberSerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.link and isinstance(representation.get('link'), str):
-            representation['link'] = representation['link'].replace('http://', 'https://')
-        return representation
     
     class Meta:
         model = Document
         fields = "__all__"
 
+
 class UserAgreementSerializer(serializers.ModelSerializer):
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.link and isinstance(representation.get('link'), str):
-            representation['link'] = representation['link'].replace('http://', 'https://')
-        return representation
     
     class Meta:
         model = UserAgreement
@@ -38,11 +24,6 @@ class UserAgreementSerializer(serializers.ModelSerializer):
 
 
 class OrganizationDetailSerializer(serializers.ModelSerializer):
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.link and isinstance(representation.get('link'), str):
-            representation['link'] = representation['link'].replace('http://', 'https://')
-        return representation
     
     class Meta:
         model = OrganizationDetail
